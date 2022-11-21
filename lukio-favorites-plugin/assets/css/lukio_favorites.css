@@ -1,0 +1,41 @@
+.lukio_favorites_button {
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    transition: opacity 0.4s ease-in-out;
+    cursor: pointer;
+}
+
+.lukio_favorites_button_default_svg {
+    width: 100%;
+    height: auto;
+}
+
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav {
+    fill: #4aa896;
+}
+
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav {
+    fill: #4aa896;
+}
+
+.lukio_favorites_button_not_added,
+.lukio_favorites_button_added {
+    display: none;
+    width: 100%;
+    height: auto;
+}
+
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_not_added {
+    display: block;
+}
+
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_added {
+    display: block;
+}
+
+.lukio_favorites_button.working {
+    opacity: 0.3;
+    cursor: wait;
+}
