@@ -1,7 +1,7 @@
 <?php
 /* 
  * Plugin Name: Lukio Favorites Plugin
- * Author: Itai Dotan
+ * Author: Itai Dotan By <a href="https://lukio.pro">Lukio</a>
  * Text Domain: lukio-favorites-plugin
  * Domain Path: /languages/
  */
