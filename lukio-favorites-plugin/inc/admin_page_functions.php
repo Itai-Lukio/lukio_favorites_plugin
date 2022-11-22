@@ -10,7 +10,7 @@ if (!function_exists('lukio_favorites_admin_menu')) {
             'lukio_favorites',
             'lukio_favorites_admin_page_html',
             'dashicons-lukio_fav-H_lu',
-            30,
+            30
         );
 
         if (
