@@ -1,43 +1,65 @@
 <?php
-class LukioFavoritesClass
+class Lukio_Favorites_Class
 {
+    private static $instance = null;
+
     private $table_name;
     private $wpdb;
 
-    private $default_color;
-    private $default_options;
+    private $default_color = '#4aa896';
+    private $default_options = array(
+        'add_to_title' => true,
+        'custom_button' => false,
+        'button_color' => '#4aa896',
+        'custom_button_on' => 0,
+        'custom_button_off' => 0,
+    );
+    private $default_options_bools = array();
+    private $add_to_title;
     private $custom_button;
     private $button_color;
     private $custom_button_on;
     private $custom_button_off;
 
-    private $default_svg;
-    private $color_prinred;
+    private $default_svg = '<svg class="lukio_favorites_button_default_svg" xmlns="http://www.w3.org/2000/svg" width="18.777" height="17" viewBox="0 0 18.777 17">
+    <path class="lukio_pre_fav" id="pre-like" d="M536,431.778a4,4,0,0,1,4,4c0,2.209-2.033,3.8-3.555,5.333-1.223,1.23-3.555,3.111-3.555,3.111s-2.332-1.881-3.555-3.111c-1.523-1.532-3.556-3.124-3.556-5.333a4,4,0,0,1,7.111-2.512A3.99,3.99,0,0,1,536,431.778M536,430a5.749,5.749,0,0,0-3.111.908,5.78,5.78,0,0,0-8.889,4.87c0,2.647,1.9,4.477,3.419,5.948.224.216.444.427.654.639,1.277,1.285,3.6,3.163,3.7,3.242a1.778,1.778,0,0,0,2.232,0c.1-.08,2.423-1.957,3.7-3.242.21-.211.43-.423.654-.639,1.523-1.471,3.419-3.3,3.419-5.948A5.784,5.784,0,0,0,536,430Z" transform="translate(-523.5 -429.5)" fill="transparent" stroke="rgba(0,0,0,0)" stroke-miterlimit="10" stroke-width="1" />
+    <path class="lukio_fav" xmlns="http://www.w3.org/2000/svg" id="like" d="M536,430a5.749,5.749,0,0,0-3.111.908,5.78,5.78,0,0,0-8.889,4.87c0,2.647,1.9,4.477,3.419,5.948.224.216.444.427.654.639,1.277,1.285,3.6,3.163,3.7,3.242a1.778,1.778,0,0,0,2.232,0c.1-.08,2.423-1.957,3.7-3.242.21-.211.43-.423.654-.639,1.523-1.471,3.419-3.3,3.419-5.948A5.784,5.784,0,0,0,536,430Z" transform="translate(-523.5 -429.5)" fill="transparent" stroke="rgba(0,0,0,0)" stroke-miterlimit="10" stroke-width="1" />
+    </svg>';
+    private $color_printed = false;
 
-    function __construct()
+
+    public static function get_instance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    private function __construct()
     {
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->table_name = $this->wpdb->prefix . 'lukio_favorites_plugin';
 
-        $this->default_color = '#4aa896';
-        $this->default_options = array(
-            'custom_button' => false,
-            'button_color' => $this->default_color,
-            'custom_button_on' => 0,
-            'custom_button_off' => 0,
-        );
-        $options = get_option('lukio_favorites', $this->default_options);
+        foreach ($this->default_options as $key => $value) {
+            if ($value === true || $value === false) {
+                $this->default_options_bools[] = $key;
+            }
+        }
+        $this->update_options();
+    }
+
+    public function update_options()
+    {
+        // get the site option with the default of default_options
+        $options = array_merge($this->default_options, get_option('lukio_favorites_plugin_options', array()));
+
+        $this->add_to_title = $options['add_to_title'];
         $this->custom_button = $options['custom_button'];
         $this->button_color = $options['button_color'];
         $this->custom_button_on = $options['custom_button_on'];
         $this->custom_button_off = $options['custom_button_off'];
-
-        $this->default_svg = '<svg class="lukio_favorites_button_default_svg" xmlns="http://www.w3.org/2000/svg" width="18.777" height="17" viewBox="0 0 18.777 17">
-        <path class="lukio_pre_fav" id="pre-like" d="M536,431.778a4,4,0,0,1,4,4c0,2.209-2.033,3.8-3.555,5.333-1.223,1.23-3.555,3.111-3.555,3.111s-2.332-1.881-3.555-3.111c-1.523-1.532-3.556-3.124-3.556-5.333a4,4,0,0,1,7.111-2.512A3.99,3.99,0,0,1,536,431.778M536,430a5.749,5.749,0,0,0-3.111.908,5.78,5.78,0,0,0-8.889,4.87c0,2.647,1.9,4.477,3.419,5.948.224.216.444.427.654.639,1.277,1.285,3.6,3.163,3.7,3.242a1.778,1.778,0,0,0,2.232,0c.1-.08,2.423-1.957,3.7-3.242.21-.211.43-.423.654-.639,1.523-1.471,3.419-3.3,3.419-5.948A5.784,5.784,0,0,0,536,430Z" transform="translate(-523.5 -429.5)" fill="transparent" stroke="rgba(0,0,0,0)" stroke-miterlimit="10" stroke-width="1" />
-        <path class="lukio_fav" xmlns="http://www.w3.org/2000/svg" id="like" d="M536,430a5.749,5.749,0,0,0-3.111.908,5.78,5.78,0,0,0-8.889,4.87c0,2.647,1.9,4.477,3.419,5.948.224.216.444.427.654.639,1.277,1.285,3.6,3.163,3.7,3.242a1.778,1.778,0,0,0,2.232,0c.1-.08,2.423-1.957,3.7-3.242.21-.211.43-.423.654-.639,1.523-1.471,3.419-3.3,3.419-5.948A5.784,5.784,0,0,0,536,430Z" transform="translate(-523.5 -429.5)" fill="transparent" stroke="rgba(0,0,0,0)" stroke-miterlimit="10" stroke-width="1" />
-        </svg>';
-        $this->color_prinred = false;
     }
 
     private function admin_statue()
@@ -45,7 +67,7 @@ class LukioFavoritesClass
         return (count(array_intersect(['administrator'], wp_get_current_user()->roles)) > 0);
     }
 
-    function create_table()
+    public function create_table()
     {
         if (!is_user_logged_in() || !$this->admin_statue()) {
             return;
@@ -64,7 +86,7 @@ class LukioFavoritesClass
         dbDelta($sql);
     }
 
-    function drop_table()
+    public function drop_table()
     {
         if (!is_user_logged_in() || !$this->admin_statue()) {
             return;
@@ -75,7 +97,7 @@ class LukioFavoritesClass
         );
     }
 
-    function get_user_favorites($per_page = null, $page = 0)
+    public function get_user_favorites($per_page = null, $page = 0)
     {
         if (is_user_logged_in()) {
             $user_id = get_current_user_id();
@@ -111,7 +133,7 @@ class LukioFavoritesClass
         return $favorites_array;
     }
 
-    function favorites_button_clicked($post_id)
+    public function favorites_button_clicked($post_id)
     {
         $new_status = false;
         if (is_user_logged_in()) {
@@ -144,7 +166,7 @@ class LukioFavoritesClass
         return $new_status;
     }
 
-    function get_favorites_status($post_id = null)
+    public function get_favorites_status($post_id = null)
     {
         if (is_null($post_id)) {
             $post_id = get_post($post_id)->ID;
@@ -161,15 +183,15 @@ class LukioFavoritesClass
         }
     }
 
-    function get_button_content()
+    public function get_button_content()
     {
         if ($this->custom_button) {
             echo wp_get_attachment_image($this->custom_button_off, 'thumbnail', false, array('class' => 'lukio_favorites_button_not_added'));
             echo wp_get_attachment_image($this->custom_button_on, 'thumbnail', false, array('class' => 'lukio_favorites_button_added'));
         } else {
             echo $this->default_svg;
-            if (!$this->color_prinred) {
-                $this->color_prinred = true;
+            if (!$this->color_printed) {
+                $this->color_printed = true;
 ?>
                 <style>
                     .lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav {
@@ -185,20 +207,20 @@ class LukioFavoritesClass
         }
     }
 
-    function get_default_svg()
+    public function get($property)
     {
-        echo $this->default_svg;
+        if (isset($this->$property)) {
+            return $this->$property;
+        }
     }
 
-    function get_default_options()
+    public function get_default_options()
     {
         return $this->default_options;
     }
 
-    function get_default_color()
+    public function get_default_options_bools()
     {
-        return $this->default_color;
+        return $this->default_options_bools;
     }
 }
-
-return new LukioFavoritesClass();

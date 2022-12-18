@@ -9,7 +9,7 @@
             let btn = $(this);
             let input = btn.siblings('.process_custom_images');
             let img_prev = btn.siblings('.preview_image');
-            var image_frame;
+            let image_frame;
             if (image_frame) {
                 image_frame.open();
             }
@@ -25,14 +25,14 @@
             image_frame.on('close', function () {
                 // On close, get selections and save to the hidden input
                 // plus other AJAX stuff to refresh the image preview
-                var selection = image_frame.state().get('selection');
-                var gallery_ids = new Array();
-                var my_index = 0;
+                let selection = image_frame.state().get('selection');
+                let gallery_ids = new Array();
+                let my_index = 0;
                 selection.each(function (attachment) {
                     gallery_ids[my_index] = attachment['id'];
                     my_index++;
                 });
-                var ids = gallery_ids.join(",");
+                let ids = gallery_ids.join(",");
                 if (ids.length === 0) return true;//if closed withput selecting an image
                 input.val(ids);
                 if (ids != '0') {
@@ -43,10 +43,10 @@
             image_frame.on('open', function () {
                 // On open, get the id from the hidden input
                 // and select the appropiate images in the media manager
-                var selection = image_frame.state().get('selection');
-                var ids = input.val().split(',');
+                let selection = image_frame.state().get('selection');
+                let ids = input.val().split(',');
                 ids.forEach(function (id) {
-                    var attachment = wp.media.attachment(id);
+                    let attachment = wp.media.attachment(id);
                     attachment.fetch();
                     selection.add(attachment ? [attachment] : []);
                 });
@@ -57,17 +57,22 @@
         });
 
         function Refresh_Image(the_id, preview) {
-            var data = {
-                action: 'lukio_favorites_get_preview_img',
-                id: the_id
-            };
-
-            $.get(ajaxurl, data, function (response) {
-
-                if (response.success === true) {
-                    preview.replaceWith(response.data.image);
+            $.ajax({
+                method: 'GET',
+                url: lukio_favorites_ajax.ajax_url,
+                data: {
+                    action: 'lukio_favorites_get_preview_img',
+                    id: the_id
+                },
+                success: function (response) {
+                    if (response) {
+                        response = JSON.parse(response);
+                        if (response.success === true) {
+                            preview.replaceWith(response.image);
+                        }
+                    }
                 }
-            });
+            })
         }
 
         $('.lukio_color_picker').wpColorPicker({
