@@ -96,7 +96,7 @@ class lukio_favorites_admin_class
                 if ($_POST['lukio_favorites'][$key] == 'on') {
                     $option =  true;
                 } else if ($key == 'button_color') {
-                    $option = sanitize_text_field($_POST['lukio_favorites'][$key]);
+                    $option = sanitize_hex_color($_POST['lukio_favorites'][$key]);
                 } else {
                     $option = absint($_POST['lukio_favorites'][$key]);
                 }
