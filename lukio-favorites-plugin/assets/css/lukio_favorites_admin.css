@@ -1,4 +1,42 @@
-.lukio_favorites_switch_wrapper {
+.lukio_favorirs_options_tabs_wrapper {
+    margin: 0 0 -1px;
+    list-style: none;
+    padding: 0 10px;
+}
+
+.lukio_favorirs_options_tab {
+    margin: 0;
+    margin-inline-end: 5px;
+    display: inline-block;
+    padding: 10px 5px;
+    font-weight: 600;
+    border: solid 1px #cccccc;
+    border-bottom-color: rgb(204, 204, 204);
+    background: #e6e6e6;
+    background-color: rgb(230, 230, 230);
+    cursor: pointer;
+}
+
+.lukio_favorirs_options_tab.active {
+    background-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+.lukio_favorirs_options_tab_content {
+    display: none;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border: solid 1px #cccccc;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.lukio_favorirs_options_tab_content.active {
+    display: block;
+}
+
+.lukio_favorirs_switch_wrapper {
     margin-bottom: 8px;
 }
 
@@ -51,14 +89,20 @@ input[type="checkbox"].lukio_favorites_switch_input {
 }
 
 .lukio_favorites_switch_input:checked+.lukio_favorites_switch_slider:before {
-    -webkit-transform: translateX(22px);
-    -ms-transform: translateX(22px);
-    transform: translateX(22px);
+    left: 26px;
 }
 
-.lukio_default_btn_wrapper {
-    display: flex;
-    gap: 5px;
+.rtl .lukio_favorites_switch_slider:before {
+    right: 4px;
+}
+
+.rtl .lukio_favorites_switch_input:checked+.lukio_favorites_switch_slider:before {
+    right: 26px;
+}
+
+.lukio_custom_button_wrapper,
+.lukio_custom_images_wrapper {
+    margin-bottom: 10px;
 }
 
 .hide_option {
@@ -66,21 +110,52 @@ input[type="checkbox"].lukio_favorites_switch_input {
 }
 
 .lukio_custom_images_label {
-    margin: 10px 0;
-    display: flex;
-    align-items: end;
-    flex-wrap: wrap;
+    display: block;
+    width: max-content;
 }
 
-.custom_image_span {
-    width: 100%;
+.lukio_custom_images_label:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+.lukio_custom_image_selector_wrapper {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.set_custom_images {
+    height: max-content;
 }
 
 .preview_image {
     width: 50px;
     height: 50px;
+    object-fit: cover;
 }
 
-.set_custom_images.button {
-    height: max-content;
+.lukio_button_size_wrapper {
+    width: max-content;
+}
+
+.lukio_button_size_label {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+}
+
+.lukio_button_size_label:not(:last-of-type) {
+    margin-bottom: 5px;
+}
+
+.button_content {
+    width: 100%;
+    height: 100%;
+}
+
+.lukio_default_btn_wrapper {
+    display: flex;
+    gap: 5px;
 }

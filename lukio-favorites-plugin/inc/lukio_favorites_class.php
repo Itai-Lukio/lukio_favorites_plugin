@@ -11,16 +11,19 @@ class Lukio_Favorites_Class
     private $default_color = '#4aa896';
 
     /**
-     * default plugin options.
+     * default plugin options
      * 
-     * @var array $default_options default options the plugin start with 
+     * @var array $default_options default options the plugin start with, indexed by option name
      */
     private $default_options = array(
         'add_to_title' => true,
+        'post_types' => ['post'],
         'custom_button' => false,
         'button_color' => '#4aa896',
         'custom_button_off' => 0,
         'custom_button_on' => 0,
+        'button_width' => 20,
+        'button_height' => 20,
     );
 
     /**
@@ -45,12 +48,14 @@ class Lukio_Favorites_Class
     /**
      * track if the button css color has been printed
      * 
-     * @var bool $color_printed true when the style tag been printed to the page
+     * @var bool $style_printed true when the style tag been printed to the page
      */
-    private $color_printed = false;
+    private $style_printed = false;
 
     /**
      * get an instance of the class, create new on first call
+     * 
+     * @return Lukio_Favorites_Class class instance
      * 
      * @author Itai Dotan
      */
@@ -62,11 +67,19 @@ class Lukio_Favorites_Class
         return self::$instance;
     }
 
+    /**
+     * construct action to run when creating a new instance
+     * 
+     * @author Itai Dotan
+     */
     private function __construct()
     {
         $this->update_options();
     }
 
+    /**
+     * update active_options with the saved options form 'lukio_favorites_plugin_options'
+     */
     public function update_options()
     {
         $this->active_options = array_merge($this->default_options, get_option('lukio_favorites_plugin_options', array()));
@@ -162,6 +175,13 @@ class Lukio_Favorites_Class
         return $new_status;
     }
 
+    /**
+     * get if the current user added a post to their favorites
+     * 
+     * @param int $post_id post id to check if in the user favorites, when null check the global post. default `null`
+     * 
+     * @author Itai Dotan
+     */
     public function get_favorites_status($post_id = null)
     {
         if (is_null($post_id)) {
@@ -176,6 +196,11 @@ class Lukio_Favorites_Class
         return false;
     }
 
+    /**
+     * print the inner svg\images for the favorites button
+     * 
+     * @author Itai Dotan
+     */
     public function get_button_content()
     {
         if ($this->active_options['custom_button']) {
@@ -183,37 +208,87 @@ class Lukio_Favorites_Class
             echo wp_get_attachment_image($this->active_options['custom_button_on'], 'thumbnail', false, array('class' => 'lukio_favorites_button_image added'));
         } else {
             echo $this->default_svg;
-            if (!$this->color_printed) {
-                $this->color_printed = true;
-?>
-                <style>
-                    .lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav {
-                        fill: <?php echo $this->active_options['button_color']; ?>;
-                    }
-
-                    .lukio_favorites_button[data-lukio-fav="1"] .lukio_fav {
-                        fill: <?php echo $this->active_options['button_color']; ?>;
-                    }
-                </style>
-<?php
-            }
         }
     }
 
+    /**
+     * get class property if exists
+     * 
+     * @param string $property property name to get
+     * 
+     * @return mix|false the property value or false when no property with the given name
+     * 
+     * @author Itai Dotan
+     */
     public function get($property)
     {
         if (isset($this->$property)) {
             return $this->$property;
         }
+        return false;
     }
 
+    /**
+     * get default plugin options
+     * 
+     * @return array default plugin options
+     * 
+     * @author Itai Dotan
+     */
     public function get_default_options()
     {
         return $this->default_options;
     }
 
+    /**
+     * get active plugin options
+     * 
+     * @return array active plugin options
+     * 
+     * @author Itai Dotan
+     */
     public function get_active_options()
     {
         return $this->active_options;
+    }
+
+    /**
+     * return css string with favorites button dynamic css
+     * 
+     * @return string css string
+     * 
+     * @author Itai Dotan
+     */
+    public function button_dynamic_css()
+    {
+        return '.lukio_favorites_button{width:' . $this->active_options['button_width'] . 'px;height:' . $this->active_options['button_height'] . 'px;}' .
+            '.lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav{fill:' . $this->active_options['button_color'] . ';}' .
+            '.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav{fill:' . $this->active_options['button_color'] . '; }';
+    }
+
+    /**
+     * return if to add the button to the title
+     * 
+     * @return bool true when to add the button to the title, false otherwise
+     * 
+     * @author Itai Dotan
+     */
+    public function add_to_tilte_setting()
+    {
+        return $this->active_options['add_to_title'];
+    }
+}
+
+if (!function_exists('lukio_favorites')) {
+    /**
+     * get an instance of Lukio_Favorites_Class
+     * 
+     * @return Lukio_Favorites_Class class instance
+     * 
+     * @author Itai Dotan
+     */
+    function lukio_favorites()
+    {
+        return Lukio_Favorites_Class::get_instance();
     }
 }

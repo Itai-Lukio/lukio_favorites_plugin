@@ -1,7 +1,17 @@
 (function ($) {
     $(document).ready(function () {
+        $('.lukio_favorirs_options_tab').on('click', function () {
+            let tab = $(this);
+            if (tab.hasClass('active')) {
+                return;
+            }
+            let new_tab_index = tab.data('tab');
+            $('.lukio_favorirs_options_tab.active, .lukio_favorirs_options_tab_content.active').removeClass('active');
+            $(`.lukio_favorirs_options_tab[data-tab="${new_tab_index}"], .lukio_favorirs_options_tab_content[data-tab="${new_tab_index}"]`).addClass('active');
+        });
+
         $('#custom_button').on('change', function () {
-            $('.lukio_custom_button_wrapper, .lukio_custom_images_wrapper').toggleClass('hide_option');
+            $('.lukio_custom_button_wrapper, .lukio_custom_images_wrapper, .button_content').toggleClass('hide_option');
         });
 
         $('.set_custom_images').on('click', function (e) {
@@ -36,7 +46,8 @@
                 if (ids.length === 0) return true;//if closed withput selecting an image
                 input.val(ids);
                 if (ids != '0') {
-                    Refresh_Image(ids, img_prev);
+                    let favorite_image = input.attr('name') == 'lukio_favorites[custom_button_on]';
+                    Refresh_Image(ids, img_prev, favorite_image);
                 }
             });
 
@@ -56,7 +67,7 @@
             image_frame.open();
         });
 
-        function Refresh_Image(the_id, preview) {
+        function Refresh_Image(the_id, preview, favorite_preview_state) {
             $.ajax({
                 method: 'GET',
                 url: lukio_favorites_ajax.ajax_url,
@@ -69,12 +80,14 @@
                         response = JSON.parse(response);
                         if (response.success === true) {
                             preview.replaceWith(response.image);
+                            $(`.lukio_favorites_button[data-lukio-fav="${favorite_preview_state ? 1 : 0}"] img`).attr('src', response.image_src);
                         }
                     }
                 }
             })
         }
 
+        // create the color picker and update the svg fill on change
         $('.lukio_color_picker').wpColorPicker({
             defaultColor: $('#lukio_default_color').val(),
             change: function (event, ui) {
@@ -82,5 +95,11 @@
             },
         });
 
+        // update the button size
+        $('.lukio_edit_button_size').on('change', function () {
+            let input = $(this);
+            let css_attr = input.attr('id') == 'button_width' ? 'width' : 'height';
+            $('.lukio_favorites_button').css(css_attr, input.val() + 'px');
+        });
     })
 })(jQuery)

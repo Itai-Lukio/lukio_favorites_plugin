@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
                 data: { action: 'lukio_favorites_button_click', post_id, post_type },
                 success: function (result) {
                     result = JSON.parse(result);
-                    btn.removeClass('working').attr('data-lukio-fav', result.favorite);
+                    btn.removeClass('working').attr('data-lukio-fav', result.favorite).attr('aria-label', result.aria_label);
                 },
                 complete: function () {
                     class_object.favorites_working = false;

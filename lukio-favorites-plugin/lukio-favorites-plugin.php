@@ -1,7 +1,12 @@
 <?php
 /* 
  * Plugin Name: Lukio Favorites Plugin
+ * Plugin URI: https://lukio.pro
  * Author: Itai Dotan By <a href="https://lukio.pro">Lukio</a>
+ * Description: Favorites plug in to simply allow users to mark as favorite any post type selected in the plugin options
+ * Version: 1.0
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
  * Text Domain: lukio-favorites-plugin
  * Domain Path: /languages/
  */
@@ -9,6 +14,7 @@
 // setup constants for the plugin dir and url to use across the plugin
 define('LUKIO_FAVORITES_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('LUKIO_FAVORITES_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('LUKIO_FAVORITES_PLUGIN_MAIN_FILE', basename(__dir__) . '/' . basename(__FILE__));
 
 // require the needed plugin php files
 require_once __DIR__ . '/inc/lukio_favorites_class.php';

@@ -74,92 +74,8 @@ class lukio_favorites_admin_class
         ) {
             $this->save_options();
         }
-
-        $lukio_favorites = lukio_favorites();
-        $active_options = lukio_favorites()->get_active_options();
-        $custom_button = $active_options['custom_button'];
-        $button_color = $active_options['button_color'];
-        $custom_button_off = $active_options['custom_button_off'];
-        $custom_button_on = $active_options['custom_button_on'];
-?>
-        <div class="wrap">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-
-            <form action="" method="post">
-                <input type="hidden" name="action" value="lukio_favorites_save_options">
-                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('lukio_fav_save_options'); ?>">
-
-                <?php
-                if (function_exists('is_plugin_active')) {
-                    if (is_plugin_active('woocommerce/woocommerce.php')) {
-                ?>
-                        <div class="lukio_favorirs_switch_add_to_title_wrapper">
-                            <span><?php echo __('Add Button to product title', 'lukio-favorites-plugin'); ?></span>
-                            <label class="lukio_favorites_switch" for="add_to_title">
-                                <input class="lukio_favorites_switch_input" type="checkbox" name="lukio_favorites[add_to_title]" id="add_to_title" <?php echo $active_options['add_to_title'] ? ' checked' : ''; ?> autocomplete="off">
-                                <span class="lukio_favorites_switch_slider"></span>
-                            </label>
-                        </div>
-                <?php
-                    }
-                }
-                ?>
-
-                <div class="lukio_favorites_switch_image_wrapper">
-                    <span><?php echo __('Use custom image', 'lukio-favorites-plugin'); ?></span>
-                    <label class="lukio_favorites_switch" for="custom_button">
-                        <input class="lukio_favorites_switch_input" type="checkbox" name="lukio_favorites[custom_button]" id="custom_button" <?php echo $custom_button ? ' checked' : ''; ?> autocomplete="off">
-                        <span class="lukio_favorites_switch_slider"></span>
-                    </label>
-                </div>
-
-                <div class="lukio_custom_button_wrapper<?php if ($custom_button) {
-                                                            echo ' hide_option';
-                                                        } ?>">
-                    <input type="text" class="lukio_color_picker" name="lukio_favorites[button_color]" id="button_color" value="<?php echo $button_color; ?>" autocomplete="off">
-                    <input type="hidden" id="lukio_default_color" name="lukio_default_color" value="<?php echo $lukio_favorites->get('default_color'); ?>">
-
-                    <div class="lukio_default_btn_wrapper">
-                        <div class="lukio_favorites_button" data-lukio-fav="0">
-                            <?php $lukio_favorites->get('default_svg'); ?>
-                        </div>
-                        <div class="lukio_favorites_button" data-lukio-fav="1">
-                            <?php $lukio_favorites->get('default_svg'); ?>
-                        </div>
-                        <style>
-                            .lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav {
-                                fill: <?php echo $button_color; ?>;
-                            }
-
-                            .lukio_favorites_button[data-lukio-fav="1"] .lukio_fav {
-                                fill: <?php echo $button_color; ?>;
-                            }
-                        </style>
-                    </div>
-                </div>
-
-                <div class="lukio_custom_images_wrapper<?php if (!$custom_button) {
-                                                            echo ' hide_option';
-                                                        } ?>">
-                    <label class="lukio_custom_images_label" for="custom_button_off_btn">
-                        <span class="custom_image_span"><?php _e('Image when not in favorites', 'lukio-favorites-plugin'); ?></span>
-                        <img class="preview_image" src="<?php echo wp_get_attachment_image_url($custom_button_off, 'medium', false); ?>" alt="">
-                        <input type="hidden" value="<?php echo $custom_button_off; ?>" class="regular-text process_custom_images" id="custom_button_off" name="lukio_favorites[custom_button_off]">
-                        <button id="custom_button_off_btn" class="set_custom_images button"><?php _e('Pick image', 'lukio-favorites-plugin'); ?></button>
-                    </label>
-
-                    <label class="lukio_custom_images_label" for="custom_button_on_btn">
-                        <span class="custom_image_span"><?php _e('Image when in favorites', 'lukio-favorites-plugin'); ?></span>
-                        <img class="preview_image" src="<?php echo wp_get_attachment_image_url($custom_button_on, 'medium', false); ?>" alt="">
-                        <input type="hidden" value="<?php echo $custom_button_on; ?>" class="regular-text process_custom_images" id="custom_button_on" name="lukio_favorites[custom_button_on]">
-                        <button id="custom_button_on_btn" class="set_custom_images button"><?php _e('Pick image', 'lukio-favorites-plugin'); ?></button>
-                    </label>
-                </div>
-
-                <button class="button button-primary button-large" type="submit"><?php echo __('Save Settings', 'lukio-favorites-plugin') ?></button>
-            </form>
-        </div>
-<?php
+        // include the page markup file
+        include LUKIO_FAVORITES_PLUGIN_DIR . 'admin/admin_page.php';
     }
 
     /**
@@ -180,24 +96,42 @@ class lukio_favorites_admin_class
                 if ($_POST['lukio_favorites'][$key] == 'on') {
                     $option =  true;
                 } else if ($key == 'button_color') {
-                    $option = $_POST['lukio_favorites'][$key];
+                    $option = sanitize_text_field($_POST['lukio_favorites'][$key]);
                 } else {
-                    $option = (int)$_POST['lukio_favorites'][$key];
+                    $option = absint($_POST['lukio_favorites'][$key]);
                 }
             }
+        }
+
+        // update the post types to add the button to their title
+        if (isset($_POST['post_types'])) {
+            $options['post_types'] = array_map(
+                function ($post_name) {
+                    return sanitize_text_field($post_name);
+                },
+                (array)$_POST['post_types']
+            );
+        } else {
+            $options['post_types'] = array();
         }
 
         update_option('lukio_favorites_plugin_options', $options);
         $lukio_favorites->update_options();
     }
 
+    /**
+     * 
+     */
     public function get_preview_img()
     {
-        if (isset($_GET['id'])) {
-            $image = wp_get_attachment_image(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), 'medium', false, array('class' => 'preview_image'));
+        $image_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        if ($image_id) {
+            $image = wp_get_attachment_image($image_id, 'medium', false, array('class' => 'preview_image'));
+            $image_src = wp_get_attachment_image_src($image_id, 'medium');
             $data = array(
                 'success' => true,
                 'image' => $image,
+                'image_src' => $image_src ? $image_src[0] : '',
             );
         } else {
             $data = array(

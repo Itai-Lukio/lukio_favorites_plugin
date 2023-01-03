@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-17 12:07+0300\n"
-"PO-Revision-Date: 2022-09-17 12:08+0300\n"
+"POT-Creation-Date: 2022-12-20 17:55+0200\n"
+"PO-Revision-Date: 2022-12-20 17:57+0200\n"
 "Last-Translator: Itai Dotan <itai@lukio.pro>\n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -17,28 +17,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
 "2 : 3);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
-#: inc/admin_page.php:7
-msgid "Lukio favorites"
-msgstr "לוקיו מועדפים"
+#: admin/admin_page.php:23
+msgid "Button options"
+msgstr "אפשרויות כפתור"
 
-#: inc/admin_page.php:8
-msgid "Favorites"
-msgstr "מועדפים"
+#: admin/admin_page.php:24
+msgid "Placing options"
+msgstr "אפשרויות מיקום"
 
-#: inc/admin_page.php:91
+#: admin/admin_page.php:35
+msgid "Save Settings"
+msgstr "שמור הגדרות"
+
+#: admin/page-parts/button_options.php:8
+msgid "Use custom image"
+msgstr "השתמש בתמונה מתואמת"
+
+#: admin/page-parts/button_options.php:26
 msgid "Image when not in favorites"
 msgstr "תמונה כשלא במועדפים"
 
-#: inc/admin_page.php:94 inc/admin_page.php:101
+#: admin/page-parts/button_options.php:30
+#: admin/page-parts/button_options.php:39
 msgid "Pick image"
 msgstr "בחר תמונה"
 
-#: inc/admin_page.php:98
+#: admin/page-parts/button_options.php:35
 msgid "Image when in favorites"
 msgstr "תמונה כשבמועדפים"
 
-#: inc/admin_page.php:105
-msgid "Save Settings"
-msgstr "שמור הגדרות"
+#: admin/page-parts/button_options.php:46
+msgid "Button width"
+msgstr "רוחב הכפתור"
+
+#: admin/page-parts/button_options.php:50
+msgid "Button height"
+msgstr "גובה הכפתור"
+
+#: admin/page-parts/button_options.php:56
+msgid "Preview of the button"
+msgstr "תצוגה מוקדמת של הכפתור"
+
+#: admin/page-parts/placing_options.php:8
+msgid "Add Button to product title"
+msgstr "הוספת כפתור לכותרת מוצר"
+
+#: inc/admin_page_functions.php:29 inc/admin_page_functions.php:30
+msgid "Lukio favorites"
+msgstr "לוקיו מועדפים"
+
+#: inc/setup.php:116
+#, php-format
+msgid "Remove \"%s\" from favorites"
+msgstr "הסרה של \"%s\" מהמועדפים"
+
+#: inc/setup.php:116
+#, php-format
+msgid "Add \"%s\" to favorites"
+msgstr "הוספה של \"%s\" מהמועדפים"
+
+#: inc/setup.php:133
+msgid "Setting"
+msgstr "הגדרות"
+
+#~ msgid "Favorites"
+#~ msgstr "מועדפים"
