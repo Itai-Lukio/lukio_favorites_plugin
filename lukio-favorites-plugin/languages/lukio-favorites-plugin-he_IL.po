@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-20 17:55+0200\n"
-"PO-Revision-Date: 2022-12-20 17:57+0200\n"
+"POT-Creation-Date: 2023-01-22 18:59+0200\n"
+"PO-Revision-Date: 2023-01-22 19:00+0200\n"
 "Last-Translator: Itai Dotan <itai@lukio.pro>\n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -19,68 +19,88 @@ msgstr ""
 "2 : 3);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: admin/admin_page.php:23
+#: admin/admin-page.php:23
+msgid "General options"
+msgstr "אפשרויות כלליות"
+
+#: admin/admin-page.php:24
 msgid "Button options"
 msgstr "אפשרויות כפתור"
 
-#: admin/admin_page.php:24
-msgid "Placing options"
-msgstr "אפשרויות מיקום"
-
-#: admin/admin_page.php:35
+#: admin/admin-page.php:35
 msgid "Save Settings"
 msgstr "שמור הגדרות"
 
-#: admin/page-parts/button_options.php:8
+#: admin/page-parts/button-options.php:8
 msgid "Use custom image"
 msgstr "השתמש בתמונה מתואמת"
 
-#: admin/page-parts/button_options.php:26
+#: admin/page-parts/button-options.php:20
+msgid "Select button icon"
+msgstr "בחירת אייקון לכפתור"
+
+#: admin/page-parts/button-options.php:49
 msgid "Image when not in favorites"
 msgstr "תמונה כשלא במועדפים"
 
-#: admin/page-parts/button_options.php:30
-#: admin/page-parts/button_options.php:39
+#: admin/page-parts/button-options.php:53
+#: admin/page-parts/button-options.php:62
 msgid "Pick image"
 msgstr "בחר תמונה"
 
-#: admin/page-parts/button_options.php:35
+#: admin/page-parts/button-options.php:58
 msgid "Image when in favorites"
 msgstr "תמונה כשבמועדפים"
 
-#: admin/page-parts/button_options.php:46
+#: admin/page-parts/button-options.php:69
 msgid "Button width"
 msgstr "רוחב הכפתור"
 
-#: admin/page-parts/button_options.php:50
+#: admin/page-parts/button-options.php:73
 msgid "Button height"
 msgstr "גובה הכפתור"
 
-#: admin/page-parts/button_options.php:56
+#: admin/page-parts/button-options.php:79
 msgid "Preview of the button"
 msgstr "תצוגה מוקדמת של הכפתור"
 
-#: admin/page-parts/placing_options.php:8
+#: admin/page-parts/general-options.php:9 inc/lukio-favorites-class.php:290
+msgid "Favorites page"
+msgstr "דף מועדפים"
+
+#: admin/page-parts/general-options.php:19
 msgid "Add Button to product title"
 msgstr "הוספת כפתור לכותרת מוצר"
 
-#: inc/admin_page_functions.php:29 inc/admin_page_functions.php:30
+#: assets/icons-array.php:19
+msgid "Heart"
+msgstr "לב"
+
+#: assets/icons-array.php:26
+msgid "Star"
+msgstr "כוכב"
+
+#: inc/admin-page-functions.php:29 inc/admin-page-functions.php:30
 msgid "Lukio favorites"
 msgstr "לוקיו מועדפים"
 
-#: inc/setup.php:116
+#: inc/lukio-favorites-class.php:271
+msgid "Favorites"
+msgstr "מועדפים"
+
+#: inc/setup.php:132
 #, php-format
 msgid "Remove \"%s\" from favorites"
 msgstr "הסרה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:116
+#: inc/setup.php:132
 #, php-format
 msgid "Add \"%s\" to favorites"
 msgstr "הוספה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:133
+#: inc/setup.php:149
 msgid "Setting"
 msgstr "הגדרות"
 
-#~ msgid "Favorites"
-#~ msgstr "מועדפים"
+#~ msgid "Placing options"
+#~ msgstr "אפשרויות מיקום"

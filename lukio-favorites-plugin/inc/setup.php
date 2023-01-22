@@ -13,9 +13,7 @@ class Lukio_Favorites_Setup
 
         add_action('plugin_action_links_' . LUKIO_FAVORITES_PLUGIN_MAIN_FILE, array($this, 'plugin_action_links'));
 
-        // add_action('wp_login', array($this, 'merge_session_in_to_user'));
-
-        if (lukio_favorites()->add_to_tilte_setting()) {
+        if (lukio_favorites()->get_add_to_tilte_setting()) {
             // add the filter only when the option to add to title is true
             add_filter('the_title', array($this, 'add_button_to_titles'), 10, 2);
         }
@@ -24,6 +22,7 @@ class Lukio_Favorites_Setup
         add_action('wp_ajax_nopriv_lukio_favorites_button_click', array($this, 'ajax_favorite_click'));
 
         add_shortcode('lukio_favorites_button', array($this, 'button_markup'));
+        add_shortcode('lukio_favorites_page', array($this, 'favorites_page_content'));
     }
 
     /**
@@ -33,31 +32,30 @@ class Lukio_Favorites_Setup
      */
     public function init()
     {
-        if (!session_id()) {
-            session_start();
-            if (!isset($_SESSION['lukio_fav_session'])) {
-                $_SESSION['lukio_fav_session'] = array();
-            }
-        }
         load_plugin_textdomain('lukio-favorites-plugin', false, 'lukio-favorites-plugin/languages');
     }
 
     /**
-     * enqueue and localize the plugin style and script
+     * enqueue and localize the plugin styles and scripts
      * 
      * @author Itai Dotan
      */
     public function enqueue()
     {
-        wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio_favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio_favorites.min.css'));
+        wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
         wp_add_inline_style('lukio_favorites_stylesheets', lukio_favorites()->button_dynamic_css());
 
-        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio_favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio_favorites.min.js'));
+        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'));
         wp_localize_script(
             'lukio_favorites_script',
             'lukio_favorites_ajax',
             array('ajax_url' => admin_url('admin-ajax.php'))
         );
+
+        // enqueu favorites page style and script
+        if (is_favorites()) {
+            var_dump('chj');
+        }
     }
 
     /**
@@ -124,6 +122,8 @@ class Lukio_Favorites_Setup
      * @param int $post_id id of the post the button is for
      * 
      * @return string aria-label for the favorites button
+     * 
+     * @author Itai Dotan
      */
     private function button_aria_label($favorites_status, $post_id)
     {
@@ -172,6 +172,42 @@ class Lukio_Favorites_Setup
             return $post_title;
         }
         return $post_title . $this->button_markup(array('post_id' => $post_id));
+    }
+
+    /**
+     * get the template path.
+     * 
+     * get template from the active theme when the template was overridden, plugin template file when not.
+     * 
+     * @param string $template_name name of the file to get the path for
+     * @return string full path to the template file
+     * 
+     * @author Itai Dotan
+     */
+    private function get_template_path($template_name)
+    {
+        $theme_dir = get_stylesheet_directory();
+        if (file_exists("$theme_dir/lukio-favorites/$template_name.php")) {
+            return "$theme_dir/lukio-favorites/$template_name.php";
+        }
+        return LUKIO_FAVORITES_PLUGIN_DIR . "templates/$template_name.php";
+    }
+
+    /**
+     * get the content of favorites-content.php for the shortcode
+     * 
+     * @return string favorites page markup
+     * 
+     * @author Itai Dotan
+     */
+    public function favorites_page_content()
+    {
+        // set for easy access in the template
+        $user_favorites = lukio_favorites()->get_user_favorites();
+
+        ob_start();
+        include $this->get_template_path('favorites-content');
+        return ob_get_clean();
     }
 }
 

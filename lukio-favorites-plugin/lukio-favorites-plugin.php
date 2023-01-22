@@ -14,12 +14,12 @@
 // setup constants for the plugin dir and url to use across the plugin
 define('LUKIO_FAVORITES_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('LUKIO_FAVORITES_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('LUKIO_FAVORITES_PLUGIN_MAIN_FILE', basename(__dir__) . '/' . basename(__FILE__));
+define('LUKIO_FAVORITES_PLUGIN_MAIN_FILE', basename(__DIR__) . '/' . basename(__FILE__));
 
 // require the needed plugin php files
-require_once __DIR__ . '/inc/lukio_favorites_class.php';
+require_once __DIR__ . '/inc/lukio-favorites-class.php';
 require_once __DIR__ . '/inc/setup.php';
-require_once __DIR__ . '/inc/admin_page_functions.php';
+require_once __DIR__ . '/inc/admin-page-functions.php';
 
 if (!function_exists('lukio_favorites_activation')) {
     /**
@@ -29,10 +29,12 @@ if (!function_exists('lukio_favorites_activation')) {
      */
     function lukio_favorites_activation()
     {
-        $lukio_favoritesorites = lukio_favorites();
+        $lukio_favorites = lukio_favorites();
         if (!get_option('lukio_favorites_plugin_options')) {
-            add_option('lukio_favorites_plugin_options', $lukio_favoritesorites->get_default_options());
+            add_option('lukio_favorites_plugin_options', $lukio_favorites->get_default_options());
         }
+
+        $lukio_favorites->create_pages();
     }
 }
 register_activation_hook(__FILE__, 'lukio_favorites_activation');

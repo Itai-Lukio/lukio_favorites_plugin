@@ -14,10 +14,10 @@
             $('.lukio_custom_button_wrapper, .lukio_custom_images_wrapper, .button_content').toggleClass('hide_option');
         });
 
-        $('.set_custom_images').on('click', function (e) {
+        $('.lukio_set_custom_images').on('click', function (e) {
             e.preventDefault();
             let btn = $(this);
-            let input = btn.siblings('.process_custom_images');
+            let input = btn.siblings('.lukio_process_custom_images');
             let img_prev = btn.siblings('.preview_image');
             let image_frame;
             if (image_frame) {
@@ -100,6 +100,13 @@
             let input = $(this);
             let css_attr = input.attr('id') == 'button_width' ? 'width' : 'height';
             $('.lukio_favorites_button').css(css_attr, input.val() + 'px');
+        });
+
+        // change the shown svg when the select was changed
+        $('.lukio_svg_picker').on('change', function () {
+            let svg_index = $(this).val();
+            $('.button_content_svg').addClass('hide_option');
+            $(`.hide_option[data-index="${svg_index}"]`).removeClass('hide_option');
         });
     })
 })(jQuery)

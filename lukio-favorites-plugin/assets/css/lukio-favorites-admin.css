@@ -109,6 +109,23 @@ input[type="checkbox"].lukio_favorites_switch_input {
     display: none;
 }
 
+.lukio_pages_wrapper {
+    margin-bottom: 20px;
+}
+
+.lukio_page_label {
+    width: max-content;
+}
+
+.lukio_page_label:not(:last-of-type) {
+    margin-bottom: 5px;
+}
+
+.lukio_svg_select_label {
+    width: max-content;
+    margin-bottom: 10px;
+}
+
 .lukio_custom_images_label {
     display: block;
     width: max-content;
@@ -125,7 +142,7 @@ input[type="checkbox"].lukio_favorites_switch_input {
     gap: 5px;
 }
 
-.set_custom_images {
+.lukio_set_custom_images {
     height: max-content;
 }
 
@@ -139,14 +156,14 @@ input[type="checkbox"].lukio_favorites_switch_input {
     width: max-content;
 }
 
-.lukio_button_size_label {
+.lukio_label {
     display: flex;
     justify-content: space-between;
     gap: 5px;
     align-items: center;
 }
 
-.lukio_button_size_label:not(:last-of-type) {
+.lukio_label:not(:last-of-type) {
     margin-bottom: 5px;
 }
 
