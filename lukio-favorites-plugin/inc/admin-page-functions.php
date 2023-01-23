@@ -70,7 +70,7 @@ class lukio_favorites_admin_class
         // call the save function when posted and the checks are valid
         if (
             isset($_POST['action']) && $_POST['action'] == 'lukio_favorites_save_options' &&
-            isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'lukio_fav_save_options')
+            isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field($_POST['_wpnonce']), 'lukio_fav_save_options')
         ) {
             $this->save_options();
         }

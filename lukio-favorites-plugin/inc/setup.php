@@ -65,8 +65,19 @@ class Lukio_Favorites_Setup
      */
     public function ajax_favorite_click()
     {
+        // make sure all the required variables are set
+        if (!isset($_POST['post_id']) || !isset($_POST['post_type']) || !isset($_POST['nonce'])) {
+            die;
+        }
+
         $post_id = (int)$_POST['post_id'];
-        $new_status = lukio_favorites()->favorites_button_clicked($post_id, $_POST['post_type']) ? 1 : 0;
+        $post_type = sanitize_text_field($_POST['post_type']);
+        $nonce = sanitize_text_field($_POST['nonce']);
+        if (wp_verify_nonce($nonce, $post_type . '_' . $post_id) === false) {
+            die;
+        }
+
+        $new_status = lukio_favorites()->favorites_button_clicked($post_id, $post_type) ? 1 : 0;
         echo json_encode(array(
             'favorite' => $new_status,
             'aria_label' => $this->button_aria_label($new_status, $post_id),
@@ -101,7 +112,7 @@ class Lukio_Favorites_Setup
         $favorites_status = $lukio_favorites->get_favorites_status($post_id);
         ob_start();
 ?>
-        <button class="lukio_favorites_button<?php echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" aria-label="<?php echo esc_attr($this->button_aria_label($favorites_status, $post_id)); ?>">
+        <button class="lukio_favorites_button<?php echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" data-nonce="<?php echo wp_create_nonce($post_type . '_' . $post_id); ?>" aria-label="<?php echo esc_attr($this->button_aria_label($favorites_status, $post_id)); ?>">
             <?php
             do_action('lukio_favorites_before_button_content');
             $lukio_favorites->get_button_content();
