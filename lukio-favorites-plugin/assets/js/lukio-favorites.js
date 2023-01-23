@@ -26,6 +26,7 @@ jQuery(document).ready(function ($) {
         * @param {jQuery} btns post favorites buttons
         * @param {Number | String} post_id the post id to trigger the plugin on
         * @param {String} post_type the post type the button is for
+        * @param {string} nonce the button nonce
         */
         send_ajax(btns, post_id, post_type, nonce) {
             let class_object = this;
