@@ -32,6 +32,6 @@ $custom_button_on = $active_options['custom_button_on'];
             <?php include LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/button-options.php' ?>
         </div>
 
-        <button class="button button-primary button-large" type="submit"><?php echo __('Save Settings', 'lukio-favorites-plugin') ?></button>
+        <button class="button button-primary button-large" type="submit"><?php echo __('Save Settings', 'lukio-favorites-plugin'); ?></button>
     </form>
 </div>
