@@ -8,11 +8,12 @@
     <label class="lukio_page_label lukio_label" for="favorites_page_id">
         <span><?php echo __('Favorites page', 'lukio-favorites-plugin'); ?></span>
         <?php
-        wp_dropdown_pages(array(
+        echo str_replace('<select', '<select autocomplete="off"', wp_dropdown_pages(array(
             'selected' => $active_options['favorites_page_id'],
             'name' => 'lukio_favorites[favorites_page_id]',
             'id' => 'favorites_page_id',
-        ));
+            'echo' => false
+        )));
         ?>
     </label>
 </div>

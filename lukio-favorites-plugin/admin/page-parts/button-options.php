@@ -18,7 +18,7 @@
 
     <label class="lukio_svg_select_label lukio_label" for="svg_index">
         <span><?php echo __('Select button icon', 'lukio-favorites-plugin'); ?></span>
-        <select class="lukio_svg_picker" name="lukio_favorites[svg_index]" id="svg_index">
+        <select class="lukio_svg_picker" name="lukio_favorites[svg_index]" id="svg_index" autocomplete="off">
             <?php
             $svgs_markup = '';
             foreach ($lukio_favorites->get('svg_array') as $svg_index => $svg_data) {
