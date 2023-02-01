@@ -1,5 +1,6 @@
 (function ($) {
     $(document).ready(function () {
+        // switch option tabs
         $('.lukio_favorirs_options_tab').on('click', function () {
             let tab = $(this);
             if (tab.hasClass('active')) {
@@ -10,10 +11,12 @@
             $(`.lukio_favorirs_options_tab[data-tab="${new_tab_index}"], .lukio_favorirs_options_tab_content[data-tab="${new_tab_index}"]`).addClass('active');
         });
 
+        // switch from svg button option to custom image button options
         $('#custom_button').on('change', function () {
             $('.lukio_custom_button_wrapper, .lukio_custom_images_wrapper, .button_content').toggleClass('hide_option');
         });
 
+        // set up the image picking
         $('.lukio_set_custom_images').on('click', function (e) {
             e.preventDefault();
             let btn = $(this);
@@ -25,7 +28,7 @@
             }
             // Define image_frame as wp.media object
             image_frame = wp.media({
-                title: '',
+                title: btn.data('popup_title'),
                 multiple: false,
                 library: {
                     type: 'image',

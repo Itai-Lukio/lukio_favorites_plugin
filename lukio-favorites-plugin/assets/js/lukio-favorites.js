@@ -6,6 +6,7 @@ jQuery(document).ready(function ($) {
         }
         /**
          * Handle the plugin sending and result for the button click event
+         * 
          * @param {jQuery} clicked $(this) object form the event
          */
         clicked_favorite_button(clicked) {
@@ -23,6 +24,7 @@ jQuery(document).ready(function ($) {
 
         /**
         * send the ajax and apply the result
+        * 
         * @param {jQuery} btns post favorites buttons
         * @param {Number | String} post_id the post id to trigger the plugin on
         * @param {String} post_type the post type the button is for
@@ -52,7 +54,7 @@ jQuery(document).ready(function ($) {
 
     const lukio_favorites_plugin = new lukio_favorites_plugin_class();
 
-    // add or remove recipe to the users favorites
+    // add or remove post to the users favorites
     $(document).on('click', '.lukio_favorites_button', function (e) {
         e.stopPropagation();
         e.preventDefault();
