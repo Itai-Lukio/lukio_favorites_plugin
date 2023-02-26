@@ -1,13 +1,16 @@
 .lukio_favorites_button {
     padding: 0;
-    width: 20px;
-    height: 20px;
     background-color: transparent;
     border: none;
     transition: opacity 0.4s ease-in-out;
     vertical-align: baseline;
     cursor: pointer;
     appearance: none;
+}
+
+.lukio_favorites_button.image_button {
+    width: 20px;
+    height: 20px;
 }
 
 .lukio_favorites_button_svg {
@@ -30,11 +33,20 @@
     object-fit: cover;
 }
 
-.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_image.not_added {
+.lukio_favorites_button_text {
+    display: none;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_image.not_added,
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_text.not_added {
     display: block;
 }
 
-.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_image.added {
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_image.added,
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_text.added {
     display: block;
 }
 

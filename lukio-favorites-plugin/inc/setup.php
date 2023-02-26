@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * setup class of the plugin
+ */
+
+defined('ABSPATH') || exit;
+
 class Lukio_Favorites_Setup
 {
     /**
@@ -45,7 +52,7 @@ class Lukio_Favorites_Setup
         wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
         wp_add_inline_style('lukio_favorites_stylesheets', lukio_favorites()->button_dynamic_css());
 
-        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'));
+        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'), true);
         wp_localize_script(
             'lukio_favorites_script',
             'lukio_favorites_ajax',
@@ -112,7 +119,8 @@ class Lukio_Favorites_Setup
         $favorites_status = $lukio_favorites->get_favorites_status($post_id);
         ob_start();
 ?>
-        <button class="lukio_favorites_button<?php echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" data-nonce="<?php echo wp_create_nonce($post_type . '_' . $post_id); ?>" aria-label="<?php echo esc_attr($this->button_aria_label($favorites_status, $post_id)); ?>">
+        <button class="lukio_favorites_button<?php echo $lukio_favorites->is_text_button() ? ' text_button' : ' image_button';
+                                                echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" data-nonce="<?php echo wp_create_nonce($post_type . '_' . $post_id); ?>" aria-label="<?php echo esc_attr($this->button_aria_label($favorites_status, $post_id)); ?>">
             <?php
             do_action('lukio_favorites_before_button_content');
             $lukio_favorites->get_button_content();

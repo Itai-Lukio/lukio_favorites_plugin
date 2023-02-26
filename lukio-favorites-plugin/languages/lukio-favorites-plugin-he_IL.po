@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 18:59+0200\n"
-"PO-Revision-Date: 2023-01-22 19:00+0200\n"
+"POT-Creation-Date: 2023-02-08 17:28+0200\n"
+"PO-Revision-Date: 2023-02-08 17:28+0200\n"
 "Last-Translator: Itai Dotan <itai@lukio.pro>\n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -19,58 +19,78 @@ msgstr ""
 "2 : 3);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: admin/admin-page.php:23
+#: admin/admin-page.php:21
 msgid "General options"
 msgstr "אפשרויות כלליות"
 
-#: admin/admin-page.php:24
+#: admin/admin-page.php:22
 msgid "Button options"
 msgstr "אפשרויות כפתור"
 
-#: admin/admin-page.php:35
+#: admin/admin-page.php:23
+msgid "Extra css"
+msgstr "אקסטרה css"
+
+#: admin/admin-page.php:38
 msgid "Save Settings"
 msgstr "שמור הגדרות"
 
-#: admin/page-parts/button-options.php:8
+#: admin/page-parts/button-options.php:12
+msgid "Use text button"
+msgstr "כפתור טקסט"
+
+#: admin/page-parts/button-options.php:29
 msgid "Use custom image"
 msgstr "השתמש בתמונה מתואמת"
 
-#: admin/page-parts/button-options.php:20
-msgid "Select button icon"
-msgstr "בחירת אייקון לכפתור"
-
-#: admin/page-parts/button-options.php:49
-msgid "Image when not in favorites"
-msgstr "תמונה כשלא במועדפים"
-
-#: admin/page-parts/button-options.php:53
-#: admin/page-parts/button-options.php:62
-msgid "Pick image"
-msgstr "בחר תמונה"
-
-#: admin/page-parts/button-options.php:58
-msgid "Image when in favorites"
-msgstr "תמונה כשבמועדפים"
-
-#: admin/page-parts/button-options.php:69
-msgid "Button width"
-msgstr "רוחב הכפתור"
-
-#: admin/page-parts/button-options.php:73
-msgid "Button height"
-msgstr "גובה הכפתור"
-
-#: admin/page-parts/button-options.php:79
-msgid "Preview of the button"
-msgstr "תצוגה מוקדמת של הכפתור"
-
-#: admin/page-parts/general-options.php:9 inc/lukio-favorites-class.php:290
+#: admin/page-parts/general-options.php:13 inc/lukio-favorites-class.php:372
 msgid "Favorites page"
 msgstr "דף מועדפים"
 
-#: admin/page-parts/general-options.php:19
-msgid "Add Button to product title"
-msgstr "הוספת כפתור לכותרת מוצר"
+#: admin/page-parts/general-options.php:26
+msgid "Add Button to post title"
+msgstr "הוספת כפתור לכותרת הפוסט"
+
+#: admin/page-parts/button-options/images-optioin.php:11
+msgid "Image when not in favorites"
+msgstr "תמונה כשלא במועדפים"
+
+#: admin/page-parts/button-options/images-optioin.php:15
+msgid "Image when in favorites"
+msgstr "תמונה כשבמועדפים"
+
+#: admin/page-parts/button-options/images-optioin.php:27
+msgid "Pick image"
+msgstr "בחר תמונה"
+
+#: admin/page-parts/button-options/preview-button.php:11
+msgid "Preview of the button"
+msgstr "תצוגה מוקדמת של הכפתור"
+
+#: admin/page-parts/button-options/size-optioin.php:13
+msgid "Button width"
+msgstr "רוחב הכפתור"
+
+#: admin/page-parts/button-options/size-optioin.php:14
+msgid "Button height"
+msgstr "גובה הכפתור"
+
+#: admin/page-parts/button-options/svg-optioin.php:11
+msgid "Select button icon"
+msgstr "בחירת אייקון לכפתור"
+
+#: admin/page-parts/button-options/text-optioin.php:10
+msgid ""
+"Saving empty field will go back to the current language default, if supported"
+msgstr "שמירת שדות ריקים יחזיר לבררת המחדל של השפה הנוכחית, אם היא נתמכת"
+
+#: admin/page-parts/button-options/text-optioin.php:14
+msgid "Add text"
+msgstr "טקסט הוספה"
+
+#: admin/page-parts/button-options/text-optioin.php:19
+msgid "Remove text"
+msgstr "טקסט הסרה"
 
 #: assets/icons-array.php:19
 msgid "Heart"
@@ -80,25 +100,33 @@ msgstr "לב"
 msgid "Star"
 msgstr "כוכב"
 
-#: inc/admin-page-functions.php:29 inc/admin-page-functions.php:30
+#: inc/admin-page-functions.php:32 inc/admin-page-functions.php:33
 msgid "Lukio favorites"
 msgstr "לוקיו מועדפים"
 
-#: inc/lukio-favorites-class.php:271
+#: inc/lukio-favorites-class.php:234
+msgid "Add to favorites"
+msgstr "הוספה למועדפים"
+
+#: inc/lukio-favorites-class.php:235
+msgid "Remove from favorites"
+msgstr "הסרה מהמועדפים"
+
+#: inc/lukio-favorites-class.php:353
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: inc/setup.php:132
+#: inc/setup.php:151
 #, php-format
 msgid "Remove \"%s\" from favorites"
 msgstr "הסרה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:132
+#: inc/setup.php:151
 #, php-format
 msgid "Add \"%s\" to favorites"
 msgstr "הוספה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:149
+#: inc/setup.php:168
 msgid "Setting"
 msgstr "הגדרות"
 

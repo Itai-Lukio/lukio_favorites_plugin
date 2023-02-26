@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * main favorites class
+ */
+
+defined('ABSPATH') || exit;
+
 class Lukio_Favorites_Class
 {
     /**
@@ -18,20 +25,74 @@ class Lukio_Favorites_Class
     /**
      * default plugin options
      * 
+     * @var array $default_options_schematics schematics for the default options the plugin start with, indexed by option name
+     */
+    private $default_options_schematics = array(
+        'add_to_title' => array(
+            'type' => 'bool',
+            'default' => true
+        ),
+        'post_types' => array(
+            'type' => 'array',
+            'default' => ['post']
+        ),
+        'text_button' => array(
+            'type' => 'bool',
+            'default' => false
+        ),
+        'add_text' => array(
+            'type' => 'text',
+            'default' => ''
+        ),
+        'remove_text' => array(
+            'type' => 'text',
+            'default' => ''
+        ),
+        'custom_button' => array(
+            'type' => 'bool',
+            'default' => false
+        ),
+        'svg_index' => array(
+            'type' => 'int',
+            'default' => 0
+        ),
+        'button_color' => array(
+            'type' => 'hex',
+            'default' => '#4aa896'
+        ),
+        'custom_button_off' => array(
+            'type' => 'int',
+            'default' => 0
+        ),
+        'custom_button_on' => array(
+            'type' => 'int',
+            'default' => 0
+        ),
+        'button_width' => array(
+            'type' => 'int',
+            'default' => 20
+        ),
+        'button_height' => array(
+            'type' => 'int',
+            'default' => 20
+        ),
+        'favorites_page_id' => array(
+            'type' => 'int',
+            'default' => 0
+        ),
+        'extra_css' => array(
+            'type' => 'textarea',
+            'default' => ''
+        ),
+
+    );
+
+    /**
+     * default plugin options
+     * 
      * @var array $default_options default options the plugin start with, indexed by option name
      */
-    private $default_options = array(
-        'add_to_title' => true,
-        'post_types' => ['post'],
-        'custom_button' => false,
-        'svg_index' => 0,
-        'button_color' => '#4aa896',
-        'custom_button_off' => 0,
-        'custom_button_on' => 0,
-        'button_width' => 20,
-        'button_height' => 20,
-        'favorites_page_id' => 0,
-    );
+    private $default_options = array();
 
     /**
      * holds the plugin options
@@ -71,13 +132,6 @@ class Lukio_Favorites_Class
     private $saved_favorites;
 
     /**
-     * track if the button css color has been printed
-     * 
-     * @var bool $style_printed true when the style tag been printed to the page
-     */
-    private $style_printed = false;
-
-    /**
      * get an instance of the class, create new on first call
      * 
      * @return Lukio_Favorites_Class class instance
@@ -109,6 +163,8 @@ class Lukio_Favorites_Class
             $_SESSION['lukio_fav_session'] = array();
         }
 
+        $this->set_default_options();
+
         $this->update_options();
 
         // useing priority 20 to be triggerd after the setup.php init action
@@ -130,9 +186,24 @@ class Lukio_Favorites_Class
         // set the user_id and saved_favorites at init to be able to use get_current_user_id(), before init get_current_user_id() return 0
         $this->user_id = get_current_user_id();
         $this->set_saved_favorites();
+        $this->set_epmty_text_button();
 
         // set svg_array in init to have the textdomain loaded
         $this->svg_array = include LUKIO_FAVORITES_PLUGIN_DIR . 'assets/icons-array.php';
+
+        $this->add_link_to_menu();
+    }
+
+    /**
+     * populate the default_options from the schematics
+     * 
+     * @author Itai Dotan
+     */
+    private function set_default_options()
+    {
+        foreach ($this->default_options_schematics as $option_index => $option_data) {
+            $this->default_options[$option_index] = $option_data['default'];
+        }
     }
 
     /**
@@ -157,6 +228,20 @@ class Lukio_Favorites_Class
             $this->saved_favorites = is_array($user_meta) ? $user_meta : array();
         } else {
             $this->saved_favorites = $_SESSION['lukio_fav_session'];
+        }
+    }
+
+    private function set_epmty_text_button()
+    {
+        $texts = array(
+            'add_text' => __('Add to favorites', 'lukio-favorites-plugin'),
+            'remove_text' => __('Remove from favorites', 'lukio-favorites-plugin'),
+        );
+
+        foreach ($texts as $text_index => $text_to_use) {
+            if ($this->active_options[$text_index] == '') {
+                $this->active_options[$text_index] = $text_to_use;
+            }
         }
     }
 
@@ -358,12 +443,27 @@ class Lukio_Favorites_Class
      */
     public function get_button_content()
     {
+        if ($this->active_options['text_button']) {
+?>
+            <span class="lukio_favorites_button_text not_added"><?php echo apply_filters('lukio_favorites_button_off_text', $this->active_options['remove_text']); ?></span>
+            <span class="lukio_favorites_button_text added"><?php echo apply_filters('lukio_favorites_button_on_text', $this->active_options['add_text']); ?></span>
+<?php
+            return;
+        }
+
         if ($this->active_options['custom_button']) {
             echo wp_get_attachment_image($this->active_options['custom_button_off'], 'thumbnail', false, array('class' => 'lukio_favorites_button_image not_added'));
             echo wp_get_attachment_image($this->active_options['custom_button_on'], 'thumbnail', false, array('class' => 'lukio_favorites_button_image added'));
         } else {
             echo $this->svg_array[$this->active_options['svg_index']]['svg'];
         }
+    }
+
+    private function add_link_to_menu()
+    {
+        // add_filter('wp_nav_menu_object', function ($items, $args) {
+        //     var_dump($items, $args);
+        // }, 10, 2);
     }
 
     /**
@@ -404,6 +504,18 @@ class Lukio_Favorites_Class
      * 
      * @author Itai Dotan
      */
+    public function get_default_options_schematics()
+    {
+        return $this->default_options_schematics;
+    }
+
+    /**
+     * get default plugin options
+     * 
+     * @return array default plugin options
+     * 
+     * @author Itai Dotan
+     */
     public function get_default_options()
     {
         return $this->default_options;
@@ -422,7 +534,7 @@ class Lukio_Favorites_Class
     }
 
     /**
-     * return css string with favorites button dynamic css
+     * return css string with favorites button dynamic css and the user extra css
      * 
      * @return string css string
      * 
@@ -430,9 +542,9 @@ class Lukio_Favorites_Class
      */
     public function button_dynamic_css()
     {
-        return '.lukio_favorites_button{width:' . $this->active_options['button_width'] . 'px;height:' . $this->active_options['button_height'] . 'px;}' .
+        return '.lukio_favorites_button.image_button{width:' . $this->active_options['button_width'] . 'px;height:' . $this->active_options['button_height'] . 'px;}' .
             '.lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav{fill:' . $this->active_options['button_color'] . ';}' .
-            '.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav{fill:' . $this->active_options['button_color'] . '; }';
+            '.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav{fill:' . $this->active_options['button_color'] . ';}' . $this->active_options['extra_css'];
     }
 
     /**
@@ -447,6 +559,10 @@ class Lukio_Favorites_Class
         return $this->active_options['add_to_title'];
     }
 
+    public function is_text_button()
+    {
+        return $this->active_options['text_button'];
+    }
 
     /**
      * on user login get the favorites from session and add them to the user saved favorites when not added before

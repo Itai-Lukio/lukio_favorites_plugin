@@ -4,13 +4,11 @@
  * display the plugin admin option page
  */
 
+defined('ABSPATH') || exit;
+
 // setup needed vars
 $lukio_favorites = lukio_favorites();
 $active_options = lukio_favorites()->get_active_options();
-$custom_button = $active_options['custom_button'];
-$button_color = $active_options['button_color'];
-$custom_button_off = $active_options['custom_button_off'];
-$custom_button_on = $active_options['custom_button_on'];
 ?>
 <div class="wrap">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
@@ -22,6 +20,8 @@ $custom_button_on = $active_options['custom_button_on'];
         <ul class="lukio_favorirs_options_tabs_wrapper">
             <li class="lukio_favorirs_options_tab active" data-tab="0"><?php echo __('General options', 'lukio-favorites-plugin'); ?></li>
             <li class="lukio_favorirs_options_tab" data-tab="1"><?php echo __('Button options', 'lukio-favorites-plugin'); ?></li>
+            <li class="lukio_favorirs_options_tab" data-tab="2"><?php echo __('Extra css', 'lukio-favorites-plugin'); ?></li>
+            <li class="lukio_favorirs_options_tab" data-tab="3"><?php echo __('Info', 'lukio-favorites-plugin'); ?></li>
         </ul>
 
         <div class="lukio_favorirs_options_tab_content active" data-tab="0">
@@ -30,6 +30,14 @@ $custom_button_on = $active_options['custom_button_on'];
 
         <div class="lukio_favorirs_options_tab_content" data-tab="1">
             <?php include LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/button-options.php' ?>
+        </div>
+
+        <div class="lukio_favorirs_options_tab_content" data-tab="2">
+            <textarea class="lukio_favorirs_textarea" name="extra_css" id="extra_css" cols="30" rows="10" placeholder=".lukio_favorites_button {&#10;&#x09;position: absolute;&#10;}"><?php echo $active_options['extra_css']; ?></textarea>
+        </div>
+
+        <div class="lukio_favorirs_options_tab_content" data-tab="3">
+            <?php include LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/info.php' ?>
         </div>
 
         <button class="button button-primary button-large" type="submit"><?php echo __('Save Settings', 'lukio-favorites-plugin'); ?></button>

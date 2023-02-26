@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 18:59+0200\n"
-"PO-Revision-Date: 2023-01-22 18:59+0200\n"
+"POT-Creation-Date: 2023-02-08 17:28+0200\n"
+"PO-Revision-Date: 2023-02-08 17:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,59 +19,77 @@ msgstr ""
 "Plural-Forms: \n"
 "X-Generator: Eazy Po 1.0.0.0\n"
 
-#: admin/admin-page.php:23
+#: admin/admin-page.php:21
 msgid "General options"
 msgstr ""
 
-#: admin/admin-page.php:24
+#: admin/admin-page.php:22
 msgid "Button options"
 msgstr ""
 
-#: admin/admin-page.php:35
+#: admin/admin-page.php:23
+msgid "Extra css"
+msgstr ""
+
+#: admin/admin-page.php:38
 msgid "Save Settings"
 msgstr ""
 
-#: admin/page-parts/button-options.php:8
+#: admin/page-parts/button-options.php:12
+msgid "Use text button"
+msgstr ""
+
+#: admin/page-parts/button-options.php:29
 msgid "Use custom image"
 msgstr ""
 
-#: admin/page-parts/button-options.php:20
-msgid "Select button icon"
-msgstr ""
-
-#: admin/page-parts/button-options.php:49
-msgid "Image when not in favorites"
-msgstr ""
-
-#: admin/page-parts/button-options.php:53
-#: admin/page-parts/button-options.php:62
-msgid "Pick image"
-msgstr ""
-
-#: admin/page-parts/button-options.php:58
-msgid "Image when in favorites"
-msgstr ""
-
-#: admin/page-parts/button-options.php:69
-msgid "Button width"
-msgstr ""
-
-#: admin/page-parts/button-options.php:73
-msgid "Button height"
-msgstr ""
-
-#: admin/page-parts/button-options.php:79
-msgid "Preview of the button"
-msgstr ""
-
-#: admin/page-parts/general-options.php:9 inc/lukio-favorites-class.php:290
-#, fuzzy
-#| msgid "Favorites Page"
+#: admin/page-parts/general-options.php:13 inc/lukio-favorites-class.php:372
 msgid "Favorites page"
 msgstr ""
 
-#: admin/page-parts/general-options.php:19
-msgid "Add Button to product title"
+#: admin/page-parts/general-options.php:26
+msgid "Add Button to post title"
+msgstr ""
+
+#: admin/page-parts/button-options/images-optioin.php:11
+msgid "Image when not in favorites"
+msgstr ""
+
+#: admin/page-parts/button-options/images-optioin.php:15
+msgid "Image when in favorites"
+msgstr ""
+
+#: admin/page-parts/button-options/images-optioin.php:27
+msgid "Pick image"
+msgstr ""
+
+#: admin/page-parts/button-options/preview-button.php:11
+msgid "Preview of the button"
+msgstr ""
+
+#: admin/page-parts/button-options/size-optioin.php:13
+msgid "Button width"
+msgstr ""
+
+#: admin/page-parts/button-options/size-optioin.php:14
+msgid "Button height"
+msgstr ""
+
+#: admin/page-parts/button-options/svg-optioin.php:11
+msgid "Select button icon"
+msgstr ""
+
+#: admin/page-parts/button-options/text-optioin.php:10
+msgid ""
+"Saving empty field will go back to the current language default, if supported"
+msgstr ""
+
+#: admin/page-parts/button-options/text-optioin.php:14
+msgid "Add text"
+msgstr ""
+
+#: admin/page-parts/button-options/text-optioin.php:19
+msgid "Remove text"
 msgstr ""
 
 #: assets/icons-array.php:19
@@ -82,24 +100,32 @@ msgstr ""
 msgid "Star"
 msgstr ""
 
-#: inc/admin-page-functions.php:29 inc/admin-page-functions.php:30
+#: inc/admin-page-functions.php:32 inc/admin-page-functions.php:33
 msgid "Lukio favorites"
 msgstr ""
 
-#: inc/lukio-favorites-class.php:271
+#: inc/lukio-favorites-class.php:234
+msgid "Add to favorites"
+msgstr ""
+
+#: inc/lukio-favorites-class.php:235
+msgid "Remove from favorites"
+msgstr ""
+
+#: inc/lukio-favorites-class.php:353
 msgid "Favorites"
 msgstr ""
 
-#: inc/setup.php:132
+#: inc/setup.php:151
 #, php-format
 msgid "Remove \"%s\" from favorites"
 msgstr ""
 
-#: inc/setup.php:132
+#: inc/setup.php:151
 #, php-format
 msgid "Add \"%s\" to favorites"
 msgstr ""
 
-#: inc/setup.php:149
+#: inc/setup.php:168
 msgid "Setting"
 msgstr ""

@@ -3,6 +3,9 @@
 /**
  * lukio favorites admin menu and page
  */
+
+defined('ABSPATH') || exit;
+
 class lukio_favorites_admin_class
 {
     /**
@@ -51,7 +54,7 @@ class lukio_favorites_admin_class
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_style('lukio_favorites_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
             wp_enqueue_style('lukio_favorites_admin_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites-admin.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites-admin.min.css'));
-            wp_enqueue_script('lukio_favorites_admin_scripts', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites-admin.min.js', ['jquery', 'wp-color-picker'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites-admin.min.js'));
+            wp_enqueue_script('lukio_favorites_admin_scripts', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites-admin.min.js', ['jquery', 'wp-color-picker'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites-admin.min.js'), true);
             wp_localize_script(
                 'lukio_favorites_admin_scripts',
                 'lukio_favorites_ajax',
@@ -86,33 +89,46 @@ class lukio_favorites_admin_class
     private function save_options()
     {
         $lukio_favorites = lukio_favorites();
-        $options =  $lukio_favorites->get_default_options();
+        $options_schematics = $lukio_favorites->get_default_options_schematics();
+        $options = $lukio_favorites->get_default_options();
         foreach ($options as $key => &$option) {
-            // set all bools to false because form dont post unchecked checkboxes
-            if ($option === true || $option === false) {
+            if ($options_schematics[$key]['type'] == 'bool') {
+                // set all bools to false because form dont post unchecked checkboxes
                 $option = false;
+            } else if ($options_schematics[$key]['type'] == 'array') {
+                // set array options to an empty array, form dont post unchecked checkboxes
+                $option = array();
             }
-            if (isset($_POST['lukio_favorites'][$key])) {
-                if ($_POST['lukio_favorites'][$key] == 'on') {
-                    $option =  true;
-                } else if ($key == 'button_color') {
-                    $option = sanitize_hex_color($_POST['lukio_favorites'][$key]);
-                } else {
-                    $option = absint($_POST['lukio_favorites'][$key]);
-                }
-            }
-        }
 
-        // update the post types to add the button to their title
-        if (isset($_POST['post_types'])) {
-            $options['post_types'] = array_map(
-                function ($post_name) {
-                    return sanitize_text_field($post_name);
-                },
-                (array)$_POST['post_types']
-            );
-        } else {
-            $options['post_types'] = array();
+            if (!isset($_POST[$key])) {
+                continue;
+            }
+
+            switch ($options_schematics[$key]['type']) {
+                case 'bool':
+                    $option =  true;
+                    break;
+                case 'hex':
+                    $option = sanitize_hex_color($_POST[$key]);
+                    break;
+                case 'text':
+                    $option = sanitize_text_field($_POST[$key]);
+                    break;
+                case 'textarea':
+                    $option = sanitize_textarea_field($_POST[$key]);
+                    break;
+                case 'array':
+                    $option = array_map(
+                        function ($post_name) {
+                            return sanitize_text_field($post_name);
+                        },
+                        (array)$_POST[$key]
+                    );
+                    break;
+                case 'int':
+                    $option = (int)$_POST[$key];
+                    break;
+            }
         }
 
         update_option('lukio_favorites_plugin_options', $options);
@@ -128,11 +144,9 @@ class lukio_favorites_admin_class
     {
         $image_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         if ($image_id) {
-            $image = wp_get_attachment_image($image_id, 'medium', false, array('class' => 'preview_image'));
             $image_src = wp_get_attachment_image_src($image_id, 'medium');
             $data = array(
                 'success' => true,
-                'image' => $image,
                 'image_src' => $image_src ? $image_src[0] : '',
             );
         } else {

@@ -11,6 +11,8 @@
  * Domain Path: /languages/
  */
 
+defined('ABSPATH') || exit;
+
 // setup constants for the plugin dir and url to use across the plugin
 define('LUKIO_FAVORITES_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('LUKIO_FAVORITES_PLUGIN_DIR', plugin_dir_path(__FILE__));
