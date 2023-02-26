@@ -9,10 +9,12 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="lukio_favorirs_switch_wrapper">
-    <span><?php echo __('Use text button', 'lukio-favorites-plugin'); ?></span>
-    <label class="lukio_favorites_switch" for="text_button">
-        <input class="lukio_favorites_switch_input" type="checkbox" name="text_button" id="text_button" <?php echo $active_options['text_button'] ? ' checked' : ''; ?> autocomplete="off">
-        <span class="lukio_favorites_switch_slider"></span>
+    <label for="text_button">
+        <span><?php echo __('Use text button', 'lukio-favorites-plugin'); ?></span>
+        <label class="lukio_favorites_switch" for="text_button">
+            <input class="lukio_favorites_switch_input" type="checkbox" name="text_button" id="text_button" <?php echo $active_options['text_button'] ? ' checked' : ''; ?> autocomplete="off">
+            <span class="lukio_favorites_switch_slider"></span>
+        </label>
     </label>
 </div>
 
@@ -26,10 +28,12 @@ defined('ABSPATH') || exit;
                                                     echo ' hide_option';
                                                 } ?>">
     <div class="lukio_favorirs_switch_wrapper">
-        <span><?php echo __('Use custom image', 'lukio-favorites-plugin'); ?></span>
-        <label class="lukio_favorites_switch" for="custom_button">
-            <input class="lukio_favorites_switch_input" type="checkbox" name="custom_button" id="custom_button" <?php echo $active_options['custom_button'] ? ' checked' : ''; ?> autocomplete="off">
-            <span class="lukio_favorites_switch_slider"></span>
+        <label for="custom_button">
+            <span><?php echo __('Use custom image', 'lukio-favorites-plugin'); ?></span>
+            <label class="lukio_favorites_switch" for="custom_button">
+                <input class="lukio_favorites_switch_input" type="checkbox" name="custom_button" id="custom_button" <?php echo $active_options['custom_button'] ? ' checked' : ''; ?> autocomplete="off">
+                <span class="lukio_favorites_switch_slider"></span>
+            </label>
         </label>
     </div>
 

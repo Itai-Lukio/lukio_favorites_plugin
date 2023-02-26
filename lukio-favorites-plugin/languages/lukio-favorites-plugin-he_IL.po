@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Package Name\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-08 17:28+0200\n"
-"PO-Revision-Date: 2023-02-08 17:28+0200\n"
+"POT-Creation-Date: 2023-02-26 14:35+0200\n"
+"PO-Revision-Date: 2023-02-26 14:58+0200\n"
 "Last-Translator: Itai Dotan <itai@lukio.pro>\n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -19,116 +19,148 @@ msgstr ""
 "2 : 3);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: admin/admin-page.php:21
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid "Lukio Favorites Plugin"
+msgstr "לוקיו תוסף מועדפים"
+
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid ""
+"Favorites plugin to simply allow users to mark as favorite any post type "
+"selected in the plugin options"
+msgstr ""
+"תוסף מועדפים לאפשר למשתמשים, בצורה קלה, לסמן כמועדף כל סוג פוסט שנבחר "
+"בהגדרות התוסף"
+
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid "Itai Dotan @Lukio"
+msgstr "איתי דותן @לוקיו"
+
+#: lukio-favorites-plugin/admin/admin-page.php:23
 msgid "General options"
 msgstr "אפשרויות כלליות"
 
-#: admin/admin-page.php:22
+#: lukio-favorites-plugin/admin/admin-page.php:27
 msgid "Button options"
 msgstr "אפשרויות כפתור"
 
-#: admin/admin-page.php:23
+#: lukio-favorites-plugin/admin/admin-page.php:31
 msgid "Extra css"
 msgstr "אקסטרה css"
 
-#: admin/admin-page.php:38
+#: lukio-favorites-plugin/admin/admin-page.php:35
+msgid "Info"
+msgstr "מידע"
+
+#: lukio-favorites-plugin/admin/admin-page.php:65
 msgid "Save Settings"
 msgstr "שמור הגדרות"
 
-#: admin/page-parts/button-options.php:12
+#: lukio-favorites-plugin/admin/page-parts/button-options.php:13
 msgid "Use text button"
 msgstr "כפתור טקסט"
 
-#: admin/page-parts/button-options.php:29
+#: lukio-favorites-plugin/admin/page-parts/button-options.php:32
 msgid "Use custom image"
 msgstr "השתמש בתמונה מתואמת"
 
-#: admin/page-parts/general-options.php:13 inc/lukio-favorites-class.php:372
+#: lukio-favorites-plugin/admin/page-parts/general-options.php:13
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:375
 msgid "Favorites page"
 msgstr "דף מועדפים"
 
-#: admin/page-parts/general-options.php:26
+#: lukio-favorites-plugin/admin/page-parts/general-options.php:27
 msgid "Add Button to post title"
 msgstr "הוספת כפתור לכותרת הפוסט"
 
-#: admin/page-parts/button-options/images-optioin.php:11
+#: lukio-favorites-plugin/admin/page-parts/info.php:9
+msgid "Can specify "
+msgstr ""
+
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:11
 msgid "Image when not in favorites"
 msgstr "תמונה כשלא במועדפים"
 
-#: admin/page-parts/button-options/images-optioin.php:15
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:15
 msgid "Image when in favorites"
 msgstr "תמונה כשבמועדפים"
 
-#: admin/page-parts/button-options/images-optioin.php:27
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:27
 msgid "Pick image"
 msgstr "בחר תמונה"
 
-#: admin/page-parts/button-options/preview-button.php:11
+#: lukio-favorites-plugin/admin/page-parts/button-options/preview-button.php:11
 msgid "Preview of the button"
 msgstr "תצוגה מוקדמת של הכפתור"
 
-#: admin/page-parts/button-options/size-optioin.php:13
+#: lukio-favorites-plugin/admin/page-parts/button-options/size-optioin.php:13
 msgid "Button width"
 msgstr "רוחב הכפתור"
 
-#: admin/page-parts/button-options/size-optioin.php:14
+#: lukio-favorites-plugin/admin/page-parts/button-options/size-optioin.php:14
 msgid "Button height"
 msgstr "גובה הכפתור"
 
-#: admin/page-parts/button-options/svg-optioin.php:11
+#: lukio-favorites-plugin/admin/page-parts/button-options/svg-optioin.php:11
 msgid "Select button icon"
 msgstr "בחירת אייקון לכפתור"
 
-#: admin/page-parts/button-options/text-optioin.php:10
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:10
 msgid ""
 "Saving empty field will go back to the current language default, if supported"
 msgstr "שמירת שדות ריקים יחזיר לבררת המחדל של השפה הנוכחית, אם היא נתמכת"
 
-#: admin/page-parts/button-options/text-optioin.php:14
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:14
 msgid "Add text"
 msgstr "טקסט הוספה"
 
-#: admin/page-parts/button-options/text-optioin.php:19
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:19
 msgid "Remove text"
 msgstr "טקסט הסרה"
 
-#: assets/icons-array.php:19
+#: lukio-favorites-plugin/assets/icons-array.php:19
 msgid "Heart"
 msgstr "לב"
 
-#: assets/icons-array.php:26
+#: lukio-favorites-plugin/assets/icons-array.php:26
 msgid "Star"
 msgstr "כוכב"
 
-#: inc/admin-page-functions.php:32 inc/admin-page-functions.php:33
+#: lukio-favorites-plugin/inc/admin-page-functions.php:32
+#: lukio-favorites-plugin/inc/admin-page-functions.php:33
 msgid "Lukio favorites"
 msgstr "לוקיו מועדפים"
 
-#: inc/lukio-favorites-class.php:234
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:237
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
 
-#: inc/lukio-favorites-class.php:235
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:238
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
 
-#: inc/lukio-favorites-class.php:353
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:356
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: inc/setup.php:151
+#: lukio-favorites-plugin/inc/setup.php:151
 #, php-format
 msgid "Remove \"%s\" from favorites"
 msgstr "הסרה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:151
+#: lukio-favorites-plugin/inc/setup.php:151
 #, php-format
 msgid "Add \"%s\" to favorites"
 msgstr "הוספה של \"%s\" מהמועדפים"
 
-#: inc/setup.php:168
-msgid "Setting"
+#: lukio-favorites-plugin/inc/setup.php:168
+msgid "Settings"
 msgstr "הגדרות"
+
+#~ msgid "Setting"
+#~ msgstr "הגדרות"
+
+#~ msgid "Itai Dotan By <a href=\"https://lukio.pro\">Lukio</a>"
+#~ msgstr "איתי דותן מ<a href=\"https://lukio.pro\">לוקיו</a>"
 
 #~ msgid "Placing options"
 #~ msgstr "אפשרויות מיקום"

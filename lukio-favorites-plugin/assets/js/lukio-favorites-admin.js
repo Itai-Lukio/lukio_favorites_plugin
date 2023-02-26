@@ -1,6 +1,10 @@
 jQuery(document).ready(function ($) {
     // switch option tabs
-    $('.lukio_favorirs_options_tab').on('click', function () {
+    $('.lukio_favorirs_options_tab').on('click keydown', function (e) {
+        if (e.type == 'keydown' && e.originalEvent.key != 'Enter') {
+            return;
+        }
+
         let tab = $(this);
         if (tab.hasClass('active')) {
             return;

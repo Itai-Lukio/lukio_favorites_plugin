@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-08 17:28+0200\n"
-"PO-Revision-Date: 2023-02-08 17:28+0200\n"
+"POT-Creation-Date: 2023-02-26 16:01+0200\n"
+"PO-Revision-Date: 2023-02-26 16:01+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -19,113 +19,138 @@ msgstr ""
 "Plural-Forms: \n"
 "X-Generator: Eazy Po 1.0.0.0\n"
 
-#: admin/admin-page.php:21
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid "Lukio Favorites Plugin"
+msgstr ""
+
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid "Favorites plugin to simply allow users to mark as favorite any post type selected in the plugin options"
+msgstr ""
+
+#: lukio-favorites-plugin/lukio-favorites-plugin.php
+msgid "Itai Dotan @Lukio"
+msgstr ""
+
+#: lukio-favorites-plugin/admin/admin-page.php:23
 msgid "General options"
 msgstr ""
 
-#: admin/admin-page.php:22
+#: lukio-favorites-plugin/admin/admin-page.php:27
 msgid "Button options"
 msgstr ""
 
-#: admin/admin-page.php:23
+#: lukio-favorites-plugin/admin/admin-page.php:31
 msgid "Extra css"
 msgstr ""
 
-#: admin/admin-page.php:38
+#: lukio-favorites-plugin/admin/admin-page.php:35
+msgid "Info"
+msgstr ""
+
+#: lukio-favorites-plugin/admin/admin-page.php:65
 msgid "Save Settings"
 msgstr ""
 
-#: admin/page-parts/button-options.php:12
+#: lukio-favorites-plugin/admin/page-parts/button-options.php:13
 msgid "Use text button"
 msgstr ""
 
-#: admin/page-parts/button-options.php:29
+#: lukio-favorites-plugin/admin/page-parts/button-options.php:32
 msgid "Use custom image"
 msgstr ""
 
-#: admin/page-parts/general-options.php:13 inc/lukio-favorites-class.php:372
+#: lukio-favorites-plugin/admin/page-parts/general-options.php:13
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:375
 msgid "Favorites page"
 msgstr ""
 
-#: admin/page-parts/general-options.php:26
+#: lukio-favorites-plugin/admin/page-parts/general-options.php:27
 msgid "Add Button to post title"
 msgstr ""
 
-#: admin/page-parts/button-options/images-optioin.php:11
+#: lukio-favorites-plugin/admin/page-parts/info.php:9
+msgid "Can specify "
+msgstr ""
+
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:11
 msgid "Image when not in favorites"
 msgstr ""
 
-#: admin/page-parts/button-options/images-optioin.php:15
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:15
 msgid "Image when in favorites"
 msgstr ""
 
-#: admin/page-parts/button-options/images-optioin.php:27
+#: lukio-favorites-plugin/admin/page-parts/button-options/images-optioin.php:27
 msgid "Pick image"
 msgstr ""
 
-#: admin/page-parts/button-options/preview-button.php:11
+#: lukio-favorites-plugin/admin/page-parts/button-options/preview-button.php:11
 msgid "Preview of the button"
 msgstr ""
 
-#: admin/page-parts/button-options/size-optioin.php:13
+#: lukio-favorites-plugin/admin/page-parts/button-options/size-optioin.php:13
 msgid "Button width"
 msgstr ""
 
-#: admin/page-parts/button-options/size-optioin.php:14
+#: lukio-favorites-plugin/admin/page-parts/button-options/size-optioin.php:14
 msgid "Button height"
 msgstr ""
 
-#: admin/page-parts/button-options/svg-optioin.php:11
+#: lukio-favorites-plugin/admin/page-parts/button-options/svg-optioin.php:11
 msgid "Select button icon"
 msgstr ""
 
-#: admin/page-parts/button-options/text-optioin.php:10
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:10
 msgid ""
 "Saving empty field will go back to the current language default, if supported"
 msgstr ""
 
-#: admin/page-parts/button-options/text-optioin.php:14
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:14
 msgid "Add text"
 msgstr ""
 
-#: admin/page-parts/button-options/text-optioin.php:19
+#: lukio-favorites-plugin/admin/page-parts/button-options/text-optioin.php:19
 msgid "Remove text"
 msgstr ""
 
-#: assets/icons-array.php:19
+#: lukio-favorites-plugin/assets/icons-array.php:19
 msgid "Heart"
 msgstr ""
 
-#: assets/icons-array.php:26
+#: lukio-favorites-plugin/assets/icons-array.php:26
 msgid "Star"
 msgstr ""
 
-#: inc/admin-page-functions.php:32 inc/admin-page-functions.php:33
+#: lukio-favorites-plugin/inc/admin-page-functions.php:32
+#: lukio-favorites-plugin/inc/admin-page-functions.php:33
 msgid "Lukio favorites"
 msgstr ""
 
-#: inc/lukio-favorites-class.php:234
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:237
 msgid "Add to favorites"
 msgstr ""
 
-#: inc/lukio-favorites-class.php:235
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:238
 msgid "Remove from favorites"
 msgstr ""
 
-#: inc/lukio-favorites-class.php:353
+#: lukio-favorites-plugin/inc/lukio-favorites-class.php:356
 msgid "Favorites"
 msgstr ""
 
-#: inc/setup.php:151
+#: lukio-favorites-plugin/inc/setup.php:151
 #, php-format
 msgid "Remove \"%s\" from favorites"
 msgstr ""
 
-#: inc/setup.php:151
+#: lukio-favorites-plugin/inc/setup.php:151
 #, php-format
 msgid "Add \"%s\" to favorites"
 msgstr ""
 
-#: inc/setup.php:168
-msgid "Setting"
+#: lukio-favorites-plugin/inc/setup.php:168
+msgid "Settings"
 msgstr ""
+
+#~ msgid "Setting"
+#~ msgstr ""

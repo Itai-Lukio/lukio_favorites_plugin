@@ -1,9 +1,9 @@
 <?php
 /* 
  * Plugin Name: Lukio Favorites Plugin
- * Plugin URI: https://lukio.pro
- * Author: Itai Dotan By <a href="https://lukio.pro">Lukio</a>
- * Description: Favorites plug in to simply allow users to mark as favorite any post type selected in the plugin options
+ * Author: Itai Dotan @Lukio
+ * Author URI: https://lukio.pro
+ * Description: Favorites plugin to simply allow users to mark as favorite any post type selected in the plugin options
  * Version: 1.0
  * Requires at least: 5.0
  * Requires PHP: 7.0
@@ -49,6 +49,9 @@ if (!function_exists('lukio_favorites_uninstall')) {
      */
     function lukio_favorites_uninstall()
     {
+        // trash the favorites page 
+        wp_trash_post(get_option('lukio_favorites_plugin_options', array())['favorites_page_id'] ?? 0);
+
         // delete plugin options
         delete_option('lukio_favorites_plugin_options');
 

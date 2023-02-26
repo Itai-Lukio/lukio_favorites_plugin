@@ -201,4 +201,5 @@ input[type="checkbox"].lukio_favorites_switch_input {
 .lukio_favorirs_textarea {
     width: 100%;
     max-width: 500px;
+    direction: ltr;
 }

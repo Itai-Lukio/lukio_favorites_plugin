@@ -164,10 +164,10 @@ class Lukio_Favorites_Setup
     public function plugin_action_links($actions)
     {
         if (isset($actions['deactivate'])) {
-            $setting = array(
-                'setting' => '<a href ="' . esc_url(add_query_arg('page', 'lukio_favorites', get_admin_url() . 'admin.php')) . '">' . __('Setting', 'lukio-favorites-plugin') . '</a>',
+            $settings = array(
+                'settings' => '<a href ="' . esc_url(add_query_arg('page', 'lukio_favorites', get_admin_url() . 'admin.php')) . '">' . __('Settings', 'lukio-favorites-plugin') . '</a>',
             );
-            $actions = array_merge($setting, $actions);
+            $actions = array_merge($settings, $actions);
         }
         return $actions;
     }
@@ -184,6 +184,11 @@ class Lukio_Favorites_Setup
      */
     public function add_button_to_titles($post_title, $post_id)
     {
+        // add the button only on the front page
+        if (is_admin() && !wp_doing_ajax()) {
+            return $post_title;
+        }
+
         $options = lukio_favorites()->get_active_options();
 
         $post_type = get_post_type($post_id);

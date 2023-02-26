@@ -23,10 +23,12 @@ defined('ABSPATH') || exit;
 </div>
 
 <div class="lukio_favorirs_switch_wrapper">
-    <span><?php echo __('Add Button to post title', 'lukio-favorites-plugin'); ?></span>
-    <label class="lukio_favorites_switch" for="add_to_title">
-        <input class="lukio_favorites_switch_input" type="checkbox" name="add_to_title" id="add_to_title" <?php echo $active_options['add_to_title'] ? ' checked' : ''; ?> autocomplete="off">
-        <span class="lukio_favorites_switch_slider"></span>
+    <label for="add_to_title">
+        <span><?php echo __('Add Button to post title', 'lukio-favorites-plugin'); ?></span>
+        <label class="lukio_favorites_switch" for="add_to_title">
+            <input class="lukio_favorites_switch_input" type="checkbox" name="add_to_title" id="add_to_title" <?php echo $active_options['add_to_title'] ? ' checked' : ''; ?> autocomplete="off">
+            <span class="lukio_favorites_switch_slider"></span>
+        </label>
     </label>
 </div>
 

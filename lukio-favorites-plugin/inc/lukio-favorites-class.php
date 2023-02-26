@@ -403,6 +403,11 @@ class Lukio_Favorites_Class
             } else {
                 // remove the post
                 unset($favorites_array[$post_type][$pos]);
+
+                // remove the post_type sub array when empty
+                if (empty($favorites_array[$post_type])) {
+                    unset($favorites_array[$post_type]);
+                }
             }
         } else {
             // add the new post type and post id
