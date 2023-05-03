@@ -1,11 +1,10 @@
 <?php
 
-/**
- * lukio favorites admin menu and page
- */
-
 defined('ABSPATH') || exit;
 
+/**
+ * Handle the admin side of the plugin
+ */
 class lukio_favorites_admin_class
 {
     /**
@@ -131,8 +130,9 @@ class lukio_favorites_admin_class
             }
         }
 
-        update_option('lukio_favorites_plugin_options', $options);
+        update_option(Lukio_Favorites_Class::OPTIONS_META_KEY, $options);
         $lukio_favorites->update_options();
+        $lukio_favorites->set_empty_text_button();
     }
 
     /**

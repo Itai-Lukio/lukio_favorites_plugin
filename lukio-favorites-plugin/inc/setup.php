@@ -1,11 +1,11 @@
 <?php
 
-/**
- * setup class of the plugin
- */
 
 defined('ABSPATH') || exit;
 
+/**
+ * Setup class of the plugin
+ */
 class Lukio_Favorites_Setup
 {
     /**
@@ -20,9 +20,16 @@ class Lukio_Favorites_Setup
 
         add_action('plugin_action_links_' . LUKIO_FAVORITES_PLUGIN_MAIN_FILE, array($this, 'plugin_action_links'));
 
-        if (lukio_favorites()->get_add_to_tilte_setting()) {
+        $lukio_favorites = lukio_favorites();
+        if ($lukio_favorites->get_add_to_tilte_setting()) {
             // add the filter only when the option to add to title is true
             add_filter('the_title', array($this, 'add_button_to_titles'), 10, 2);
+        }
+
+        $add_to_menu = $lukio_favorites->get_menu_add_slug();
+        if ($add_to_menu !== false) {
+            // add the filter only when the option to add to menu is true 
+            add_filter("wp_nav_menu_{$add_to_menu}_items", array($this, 'add_button_to_menu'));
         }
 
         add_action('wp_ajax_lukio_favorites_button_click', array($this, 'ajax_favorite_click'));
@@ -30,6 +37,7 @@ class Lukio_Favorites_Setup
 
         add_shortcode('lukio_favorites_button', array($this, 'button_markup'));
         add_shortcode('lukio_favorites_page', array($this, 'favorites_page_content'));
+        add_shortcode('lukio_favorites_menu_button', array($this, 'menu_button_markup'));
     }
 
     /**
@@ -49,20 +57,33 @@ class Lukio_Favorites_Setup
      */
     public function enqueue()
     {
+        $lukio_favorites =  lukio_favorites();
         wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
-        wp_add_inline_style('lukio_favorites_stylesheets', lukio_favorites()->button_dynamic_css());
+        wp_add_inline_style('lukio_favorites_stylesheets', $lukio_favorites->dynamic_css());
 
         wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'), true);
         wp_localize_script(
             'lukio_favorites_script',
             'lukio_favorites_ajax',
-            array('ajax_url' => admin_url('admin-ajax.php'))
+            array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'favorites_page' => $lukio_favorites->get_favorites_page_url()
+            )
         );
+    }
 
-        // enqueu favorites page style and script
-        if (is_favorites()) {
-            var_dump('chj');
-        }
+    /**
+     * get the plugin refresh fragments
+     * 
+     * @return array refresh fragments
+     * 
+     * @author Itai Dotan
+     */
+    public function get_fragments()
+    {
+        return apply_filters('lukio_favorites_fragments', array(
+            'div.lukio_favorites_page_wrapper' => $this->favorites_page_content(),
+        ));
     }
 
     /**
@@ -84,11 +105,22 @@ class Lukio_Favorites_Setup
             die;
         }
 
-        $new_status = lukio_favorites()->favorites_button_clicked($post_id, $post_type) ? 1 : 0;
-        echo json_encode(array(
-            'favorite' => $new_status,
-            'aria_label' => $this->button_aria_label($new_status, $post_id),
-        ));
+        $lukio_favorites = lukio_favorites();
+        $added = $lukio_favorites->favorites_button_clicked($post_id, $post_type);
+        $posts = [];
+
+        foreach ($lukio_favorites->get_user_favorites() as $type => $posts_ids) {
+            $posts = array_merge($posts, $posts_ids);
+        }
+        echo json_encode(
+            array(
+                'favorite' => $added ? 1 : 0,
+                'title' => $this->button_title($added, $post_id),
+                'empty' => $lukio_favorites->is_favorites_empty(),
+                'fragments' => $this->get_fragments(),
+                'posts' => $posts,
+            )
+        );
         die;
     }
 
@@ -112,15 +144,14 @@ class Lukio_Favorites_Setup
         $post = get_post($atts['post_id']);
         $post_id = $post->ID;
         $post_type = $post->post_type;
-        $post_id = is_null($atts['post_id']) ? get_post()->ID : (int)$atts['post_id'];
-        $atts['class'] = is_null($atts['class']) ? '' : ' ' . trim($atts['class']);
+        $atts['class'] = apply_filters('lukio_favorites_button_markup_class', is_null($atts['class']) ? '' : ' ' . trim($atts['class']));
 
         $lukio_favorites = lukio_favorites();
         $favorites_status = $lukio_favorites->get_favorites_status($post_id);
         ob_start();
 ?>
         <button class="lukio_favorites_button<?php echo $lukio_favorites->is_text_button() ? ' text_button' : ' image_button';
-                                                echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" data-nonce="<?php echo wp_create_nonce($post_type . '_' . $post_id); ?>" aria-label="<?php echo esc_attr($this->button_aria_label($favorites_status, $post_id)); ?>">
+                                                echo esc_attr($atts['class']); ?>" type="button" data-lukio-fav="<?php echo $favorites_status ? 1 : 0; ?>" data-post-id="<?php echo esc_attr($post_id); ?>" data-post-type="<?php echo esc_attr($post_type); ?>" data-nonce="<?php echo wp_create_nonce($post_type . '_' . $post_id); ?>" title="<?php echo esc_attr($this->button_title($favorites_status, $post_id)); ?>">
             <?php
             do_action('lukio_favorites_before_button_content');
             $lukio_favorites->get_button_content();
@@ -128,7 +159,7 @@ class Lukio_Favorites_Setup
             ?>
         </button>
 
-<?php
+    <?php
         return ob_get_clean();
     }
 
@@ -144,12 +175,12 @@ class Lukio_Favorites_Setup
      * 
      * @author Itai Dotan
      */
-    private function button_aria_label($favorites_status, $post_id)
+    private function button_title($favorites_status, $post_id)
     {
         $post = get_post($post_id);
         $post_title = isset($post->post_title) ? $post->post_title : '';
         $label = $favorites_status ? __('Remove "%s" from favorites', 'lukio-favorites-plugin') : __('Add "%s" to favorites', 'lukio-favorites-plugin');
-        return sprintf($label, $post_title);
+        return apply_filters('lukio_favorites_button_title', sprintf($label, $post_title), $post_title, $post_id, $favorites_status);
     }
 
     /**
@@ -164,10 +195,10 @@ class Lukio_Favorites_Setup
     public function plugin_action_links($actions)
     {
         if (isset($actions['deactivate'])) {
-            $settings = array(
+            $setting = array(
                 'settings' => '<a href ="' . esc_url(add_query_arg('page', 'lukio_favorites', get_admin_url() . 'admin.php')) . '">' . __('Settings', 'lukio-favorites-plugin') . '</a>',
             );
-            $actions = array_merge($settings, $actions);
+            $actions = array_merge($setting, $actions);
         }
         return $actions;
     }
@@ -184,17 +215,19 @@ class Lukio_Favorites_Setup
      */
     public function add_button_to_titles($post_title, $post_id)
     {
-        // add the button only on the front page
+        // to not add the button in any admin page
         if (is_admin() && !wp_doing_ajax()) {
             return $post_title;
         }
 
         $options = lukio_favorites()->get_active_options();
 
+        // not adding the button when not in the selected post types
         $post_type = get_post_type($post_id);
         if (!$post_type || !in_array($post_type, $options['post_types'])) {
             return $post_title;
         }
+
         return $post_title . $this->button_markup(array('post_id' => $post_id));
     }
 
@@ -226,11 +259,69 @@ class Lukio_Favorites_Setup
      */
     public function favorites_page_content()
     {
+        $lukio_favorites = lukio_favorites();
         // set for easy access in the template
-        $user_favorites = lukio_favorites()->get_user_favorites();
+        $empty_favorites = $lukio_favorites->is_favorites_empty();
+        $user_favorites = $empty_favorites ? array() : $lukio_favorites->get_user_favorites();
+
+        // add 'in_fragment' class to the button so the js want try to update buttons that was updated from the fragment
+        add_filter('lukio_favorites_button_markup_class', function ($class) {
+            return $class . ' in_fragment';
+        });
 
         ob_start();
         include $this->get_template_path('favorites-content');
+        return ob_get_clean();
+    }
+
+    /**
+     *  add li with the menu button to the menu
+     * 
+     * @param string $items The HTML list content for the menu items
+     * @return string the HTML list content with the added menu button
+     * 
+     * @author Itai Dotan
+     */
+    public function add_button_to_menu($items)
+    {
+        $menu_button = '<li class="lukio_favorites_menu_li">' . $this->menu_button_markup() . '</li>';
+        if (lukio_favorites()->get_add_to_menu_start()) {
+            $items = $menu_button . $items;
+        } else {
+            $items .= $menu_button;
+        }
+        return $items;
+    }
+
+    /**
+     * function of the shortcode 'lukio_favorites_menu_button', output the button markup
+     * 
+     * @param array $atts user defined attributes in shortcode tag, default `[]`
+     */
+    public function menu_button_markup($atts = [])
+    {
+        $atts = shortcode_atts(
+            array(
+                'class' => null,
+            ),
+            $atts
+        );
+
+        $lukio_favorites = lukio_favorites();
+        $empty = $lukio_favorites->is_favorites_empty() ? ' empty' : '';
+        $type_indicator = $lukio_favorites->is_menu_button_text() ? ' text_button' : ' image_button';
+        $atts['class'] = is_null($atts['class']) ? '' : ' ' . trim($atts['class']);
+
+        ob_start();
+    ?>
+        <div class="lukio_favorites_menu_button<?php echo esc_attr($atts['class']) . $type_indicator . $empty; ?>">
+            <?php
+            do_action('lukio_favorites_before_menu_button_content');
+            $lukio_favorites->get_menu_button_content();
+            do_action('lukio_favorites_after_menu_button_content');
+            ?>
+        </div>
+<?php
         return ob_get_clean();
     }
 }

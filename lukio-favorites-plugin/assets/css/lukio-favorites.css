@@ -18,19 +18,22 @@
     height: 100%;
 }
 
-.lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav {
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_unmarked {
     fill: #4aa896;
 }
 
-.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav {
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_marked {
     fill: #4aa896;
 }
 
-.lukio_favorites_button .lukio_favorites_button_image {
-    display: none;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+/* sadly had to use !important to win over woocommerce css */
+.lukio_favorites_button .lukio_favorites_button_image,
+.lukio_favorites_menu_button .lukio_favorites_menu_button_image {
+    margin: 0 !important;
+    display: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
 }
 
 .lukio_favorites_button_text {
@@ -41,16 +44,90 @@
 }
 
 .lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_image.not_added,
-.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_text.not_added {
-    display: block;
+.lukio_favorites_button[data-lukio-fav="0"] .lukio_favorites_button_text.not_added,
+.lukio_favorites_menu_button.empty .lukio_favorites_menu_button_image.empty {
+    display: block !important;
 }
 
 .lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_image.added,
-.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_text.added {
-    display: block;
+.lukio_favorites_button[data-lukio-fav="1"] .lukio_favorites_button_text.added,
+.lukio_favorites_menu_button:not(.empty) .lukio_favorites_menu_button_image:not(.empty) {
+    display: block !important;
 }
 
 .lukio_favorites_button.working {
     opacity: 0.3;
     cursor: wait;
+}
+
+.lukio_favorites_menu_button_link {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+body .lukio_favorites_page_wrapper {
+    margin: 0 auto;
+    max-width: 248px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 10px;
+}
+
+.lukio_favorites_page_post {
+    width: 248px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lukio_favorites_page_post_thumbnail {
+    width: 248px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.lukio_favorites_page_post_title {
+    margin: 8px 0;
+}
+
+.lukio_favorites_page_p {
+    margin: auto 0 5px;
+    max-width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lukio_favorites_page_post a.button {
+    display: block;
+    padding: 10px 15px;
+    color: #232323;
+    background-color: #cacaca;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.lukio_favorites_page_post a.button:hover {
+    color: #f3f3f3;
+    background-color: #5a5a5a;
+}
+
+/* uses a higher min-width then needed by 80px to have space for wp default padding  */
+@media screen and (min-width:586px) {
+    body .lukio_favorites_page_wrapper {
+        max-width: 506px;
+    }
+}
+
+@media screen and (min-width:844px) {
+    body .lukio_favorites_page_wrapper {
+        max-width: 764px;
+    }
+}
+
+@media screen and (min-width:1102px) {
+    body .lukio_favorites_page_wrapper {
+        max-width: 1022px;
+    }
 }

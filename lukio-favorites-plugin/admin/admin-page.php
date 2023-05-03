@@ -20,48 +20,65 @@ $active_options = lukio_favorites()->get_active_options();
         <?php
         $tabs = array(
             array(
-                'title' => __('General options', 'lukio-favorites-plugin'),
-                'path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/general-options.php'
+                'name' => __('General options', 'lukio-favorites-plugin'),
+                'file_path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/general-options.php'
             ),
             array(
-                'title' => __('Button options', 'lukio-favorites-plugin'),
-                'path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/button-options.php'
+                'name' => __('Button options', 'lukio-favorites-plugin'),
+                'file_path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/button-options.php'
             ),
             array(
-                'title' => __('Extra css', 'lukio-favorites-plugin'),
-                'path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/extra-css.php'
+                'name' => __('Menu options', 'lukio-favorites-plugin'),
+                'file_path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/menu-options.php'
             ),
             array(
-                'title' => __('Info', 'lukio-favorites-plugin'),
-                'path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/info.php'
+                'name' => __('Extra css', 'lukio-favorites-plugin'),
+                'file_path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/extra-css.php'
+            ),
+            array(
+                'name' => __('Info', 'lukio-favorites-plugin'),
+                'file_path' => LUKIO_FAVORITES_PLUGIN_DIR . 'admin/page-parts/info.php'
             ),
         );
 
-        $tabs_content = '';
-        ?>
+        $tabs_content_markup = '';
 
-        <ul class="lukio_favorirs_options_tabs_wrapper">
+        // check if there is a selected tab to show
+        $active_tab_index = isset($_REQUEST['tab']) ? (int)$_REQUEST['tab'] : 0;
+        $active_tab_index = $active_tab_index != 0 && $active_tab_index < count($tabs) ? $active_tab_index : 0;
+        ?>
+        <ul class="lukio_favorites_options_tabs_wrapper">
             <?php
-            foreach ($tabs as $index => $tab) {
-                $active_mark = $index == 0 ? ' active' : '';
+            // loop over the tabs to create their li and content markup
+            foreach ($tabs as $index => $tab_data) {
+                $active = $index == $active_tab_index ? ' active' : '';
             ?>
-                <li class="lukio_favorirs_options_tab<?php echo $active_mark; ?>" data-tab="<?php echo $index ?>" tabindex="0"><?php echo $tab['title']; ?></li>
+                <li class="lukio_favorites_options_tab<?php echo $active; ?>" data-tab="<?php echo $index; ?>"><?php echo $tab_data['name']; ?></li>
+
                 <?php
                 ob_start();
                 ?>
-                <div class="lukio_favorirs_options_tab_content<?php echo $active_mark; ?>" data-tab="<?php echo $index ?>">
-                    <?php include $tab['path']; ?>
+                <div class="lukio_favorites_options_tab_content<?php echo $active; ?>" data-tab="<?php echo $index; ?>">
+                    <?php include $tab_data['file_path']; ?>
                 </div>
             <?php
-                $tabs_content .= ob_get_clean();
+                // add the tab content markup to the overall tabs content
+                $tabs_content_markup .= ob_get_clean();
             }
             ?>
         </ul>
 
         <?php
-        echo $tabs_content;
+        // print all the tabs content
+        echo $tabs_content_markup;
         ?>
 
         <button class="button button-primary button-large" type="submit"><?php echo __('Save Settings', 'lukio-favorites-plugin'); ?></button>
     </form>
+
+    <style>
+        <?php
+        echo $lukio_favorites->dynamic_css();
+        ?>
+    </style>
 </div>

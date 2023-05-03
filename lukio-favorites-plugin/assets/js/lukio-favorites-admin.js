@@ -1,38 +1,48 @@
 jQuery(document).ready(function ($) {
-    // switch option tabs
-    $('.lukio_favorirs_options_tab').on('click keydown', function (e) {
-        if (e.type == 'keydown' && e.originalEvent.key != 'Enter') {
-            return;
-        }
+    /**
+     * add or update the url query with the new param and value
+     * 
+     * @param {string} param url param to update
+     * @param {string} newval param new value
+     * @param {string} search url query
+     * @returns {string} updated url query
+     * 
+     * @author Itai Dotan
+     */
+    function replace_query_param(param, newval, search) {
+        let regex = new RegExp("([?;&])(" + param + "[^&;]*[;&]?)"),
+            query = search.replace(regex, "$1").replace(/[?&]$/, '');
 
+        return query + (newval ? (query.length > 0 ? "&" : "?") + param + "=" + newval : '');
+    }
+
+    // switch option tabs
+    $('.lukio_favorites_options_tab').on('click', function () {
         let tab = $(this);
         if (tab.hasClass('active')) {
             return;
         }
         let new_tab_index = tab.data('tab');
-        $('.lukio_favorirs_options_tab.active, .lukio_favorirs_options_tab_content.active').removeClass('active');
-        $(`.lukio_favorirs_options_tab[data-tab="${new_tab_index}"], .lukio_favorirs_options_tab_content[data-tab="${new_tab_index}"]`).addClass('active');
+        $('.lukio_favorites_options_tab.active, .lukio_favorites_options_tab_content.active').removeClass('active');
+        $(`.lukio_favorites_options_tab[data-tab="${new_tab_index}"], .lukio_favorites_options_tab_content[data-tab="${new_tab_index}"]`).addClass('active');
+
+        window.history.replaceState({}, "", window.location.pathname + replace_query_param('tab', new_tab_index, window.location.search));
     });
 
-    // switch from text button options to image button options
-    $('#text_button').on('change', function () {
-        $('.lukio_favorirs_text_button_wrapper, .lukio_favorirs_image_button_wrapper').toggleClass('hide_option');
-    });
-
-    // switch from svg button options to custom image button options
-    $('#custom_button').on('change', function () {
-        $('.lukio_favorirs_custom_button_wrapper, .lukio_favorirs_custom_images_wrapper, .lukio_favorirs_button_content').toggleClass('hide_option');
+    // toggle between the switch 2 display options if there are any
+    $('.lukio_favorites_switch_input').on('change', function () {
+        $(`[data-toggle="${$(this).attr('name')}"]`).toggleClass('hide_option');
     });
 
     // set up the image picking
-    $('.lukio_favorirs_set_custom_images').on('click', function (e) {
+    $('.lukio_favorites_set_custom_images').on('click', function (e) {
         e.preventDefault();
         let btn = $(this),
-            input = btn.siblings('.lukio_favorirs_process_custom_images'),
-            image_preview = btn.siblings('.lukio_favorirs_custom_image_preview'),
+            input = btn.siblings('.lukio_favorites_process_custom_images'),
+            image_preview = btn.siblings('.lukio_favorites_custom_image_preview'),
             // Define image_frame as wp.media object
             image_frame = wp.media({
-                title: btn.data('popup_title'),
+                title: btn.data('popup-title'),
                 multiple: false,
                 library: {
                     type: 'image',
@@ -65,7 +75,7 @@ jQuery(document).ready(function ($) {
                 }
 
                 input.val(id);
-                let favorite_image = input.attr('id') == 'custom_button_on';
+                let favorite_image = input.attr('id').includes('_on');
                 refresh_preview_images(id, image_preview, favorite_image);
             });
 
@@ -77,9 +87,11 @@ jQuery(document).ready(function ($) {
      * 
      * @param {string} image_id id of the image to get
      * @param {jQuery} preview_image jQuery object of the preview image
-     * @param {bool} favorite_preview_state true to update added image, false for not added
+     * @param {bool} preview_added true to update added image, false for not added
+     * 
+     * @author Itai Dotan
      */
-    function refresh_preview_images(image_id, preview_image, favorite_preview_state) {
+    function refresh_preview_images(image_id, preview_image, preview_added) {
         $.ajax({
             method: 'GET',
             url: lukio_favorites_ajax.ajax_url,
@@ -92,7 +104,7 @@ jQuery(document).ready(function ($) {
                     response = JSON.parse(response);
                     if (response.success === true) {
                         preview_image.attr('src', response.image_src);
-                        $(`.lukio_favorites_button[data-lukio-fav="${favorite_preview_state ? 1 : 0}"] img`).attr('src', response.image_src);
+                        preview_image.closest('.lukio_favorites_options_tab_content').find(`.lukio_favorites_default_btn_wrapper [data-lukio-fav="${preview_added ? 1 : 0}"] img`).attr('src', response.image_src);
                     }
                 }
             }
@@ -100,35 +112,46 @@ jQuery(document).ready(function ($) {
     }
 
     // create the color picker and update the svg fill on change
-    $('.lukio_favorirs_color_picker').wpColorPicker({
+    $('.lukio_favorites_color_picker').wpColorPicker({
         defaultColor: $('#lukio_default_color').val(),
         change: function (event, ui) {
-            $('.lukio_favorites_button[data-lukio-fav="0"] .lukio_pre_fav,.lukio_favorites_button[data-lukio-fav="1"] .lukio_fav').css('fill', ui.color.toString());
+            let tab = $(event.target).closest('.lukio_favorites_options_tab_content');
+
+            tab.find('[data-lukio-fav="0"] .lukio_favorites_unmarked,[data-lukio-fav="1"] .lukio_favorites_marked').css('fill', ui.color.toString());
         },
     });
 
     // update the button size
-    $('.lukio_favorirs_edit_button_size')
+    $('.lukio_favorites_edit_button_size')
         .on('change', function () {
-            let input = $(this);
-            let css_attr = input.attr('id') == 'button_width' ? 'width' : 'height';
-            $('.lukio_favorites_button').css(css_attr, input.val() + 'px');
+            let input = $(this),
+                css_attr = input.attr('id').includes('width') ? 'width' : 'height',
+                tab = $(this).closest('.lukio_favorites_options_tab_content');
+
+            tab.find('.preview_button').css(css_attr, input.val() + 'px');
         })
         .on('input', function () {
-            let input = $(this);
-            input.val(input.val().replace(/[^0-9]/g, ""));
+            $(this).trigger('change');
         })
         .on('keydown', function (e) {
             if (e.key == 'Enter') {
                 e.preventDefault();
-                $(this).trigger('change');
             }
-        })
+        });
+
+    $('.lukio_favorites_text_input').on('keydown', function (e) {
+        if (e.key == 'Enter') {
+            e.preventDefault();
+        }
+    })
 
     // change the shown svg when the select was changed
-    $('.lukio_favorirs_svg_picker').on('change', function () {
-        let svg_index = $(this).val();
-        $('.lukio_favorirs_button_content_svg').addClass('hide_option');
-        $(`.hide_option[data-index="${svg_index}"]`).removeClass('hide_option');
+    $('.lukio_favorites_svg_picker').on('change', function () {
+        let input = $(this),
+            svg_index = input.val(),
+            tab = $(this).closest('.lukio_favorites_options_tab_content');
+
+        tab.find('.lukio_favorites_button_content_svg').addClass('hide_option');
+        tab.find(`.lukio_favorites_button_content_svg[data-index="${svg_index}"]`).removeClass('hide_option');
     });
 })
