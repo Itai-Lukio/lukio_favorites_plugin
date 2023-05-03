@@ -4,6 +4,10 @@
  * uninstall action to take when uninstalling the plugin
  */
 
+if (!defined('WP_UNINSTALL_PLUGIN')) {
+    die;
+}
+
 // include to get the class constants of the meta keys
 require_once __DIR__ . '/inc/lukio-favorites-class.php';
 

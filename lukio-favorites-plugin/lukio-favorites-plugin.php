@@ -44,6 +44,8 @@ register_activation_hook(__FILE__, 'lukio_favorites_activation');
 
 /**
  * deactivation actions to take
+ * 
+ * @author Itai Dotan
  */
 function lukio_favorites_deactivate()
 {
