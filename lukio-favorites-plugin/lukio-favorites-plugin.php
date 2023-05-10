@@ -20,8 +20,8 @@ define('LUKIO_FAVORITES_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('LUKIO_FAVORITES_PLUGIN_MAIN_FILE', basename(__DIR__) . '/' . basename(__FILE__));
 
 // require the needed plugin php files
-require_once __DIR__ . '/inc/lukio-favorites-class.php';
 require_once __DIR__ . '/inc/setup.php';
+require_once __DIR__ . '/inc/lukio-favorites-class.php';
 require_once __DIR__ . '/inc/admin-page-functions.php';
 
 /**

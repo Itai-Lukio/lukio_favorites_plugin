@@ -8,8 +8,10 @@
 
 defined('ABSPATH') || exit;
 
+do_action('lukio_favorites_before_page');
 ?>
-<div class="lukio_favorites_page_wrapper">
+
+<div class="lukio_favorites_page_wrapper<?php echo esc_attr($class); ?>">
     <?php
     if ($empty_favorites) {
     ?>
@@ -23,12 +25,12 @@ defined('ABSPATH') || exit;
             foreach ($posts as $post_id) {
                 $post = get_post($post_id);
 
-                // display ony existing and published posts
+                // display only existing and published posts
                 if (is_null($post) || $post->post_status !== 'publish') {
                     continue;
                 }
         ?>
-                <div class="lukio_favorites_post lukio_favorites_page_post <?php $type; ?>">
+                <div class="lukio_favorites_post lukio_favorites_page_post <?php echo $type; ?>">
                     <?php
                     $post_thumbnail = get_post_thumbnail_id($post);
 
@@ -64,3 +66,7 @@ defined('ABSPATH') || exit;
     }
     ?>
 </div>
+
+<?php
+do_action('lukio_favorites_after_page');
+?>

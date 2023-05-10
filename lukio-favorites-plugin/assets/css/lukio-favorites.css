@@ -8,11 +8,6 @@
     appearance: none;
 }
 
-.lukio_favorites_button.image_button {
-    width: 20px;
-    height: 20px;
-}
-
 .lukio_favorites_button_svg {
     width: 100%;
     height: 100%;

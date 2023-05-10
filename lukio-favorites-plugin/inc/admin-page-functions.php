@@ -17,7 +17,12 @@ class lukio_favorites_admin_class
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'admin_enqueue'));
 
+        add_action('plugin_action_links_' . LUKIO_FAVORITES_PLUGIN_MAIN_FILE, array($this, 'plugin_action_links'));
+
         add_action('wp_ajax_lukio_favorites_get_preview_img', array($this, 'get_preview_img'));
+
+        // add a post display state for plugin pages.
+        add_filter('display_post_states', array($this, 'add_display_post_states'), 10, 2);
     }
 
     /**
@@ -56,7 +61,7 @@ class lukio_favorites_admin_class
             wp_enqueue_script('lukio_favorites_admin_scripts', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites-admin.min.js', ['jquery', 'wp-color-picker'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites-admin.min.js'), true);
             wp_localize_script(
                 'lukio_favorites_admin_scripts',
-                'lukio_favorites_ajax',
+                'lukio_favorites_data',
                 array('ajax_url' => admin_url('admin-ajax.php'))
             );
         };
@@ -156,6 +161,41 @@ class lukio_favorites_admin_class
         }
         echo json_encode($data);
         die;
+    }
+
+    /**
+     * add link to the plugin option page in wp plugin page when the plugin is active
+     * 
+     * @param array $actions an array of plugin action links
+     * 
+     * @return array modified actions link when the plug in is active, un-modified when not active
+     * 
+     * @author Itai Dotan
+     */
+    public function plugin_action_links($actions)
+    {
+        if (isset($actions['deactivate'])) {
+            $setting = array(
+                'settings' => '<a href ="' . esc_url(add_query_arg('page', 'lukio_favorites', get_admin_url() . 'admin.php')) . '">' . __('Settings', 'lukio-favorites-plugin') . '</a>',
+            );
+            $actions = array_merge($setting, $actions);
+        }
+        return $actions;
+    }
+
+    /**
+     * Add a post display state for the plugin pages
+     *
+     * @param array $post_states An array of post display states.
+     * @param WP_Post $post The current post object.
+     */
+    public function add_display_post_states($post_states, $post)
+    {
+        if (lukio_favorites()->get_active_options()['favorites_page_id'] === $post->ID) {
+            $post_states['lukio_favorites'] = __('Favorites page', 'lukio-favorites-plugin');
+        }
+
+        return $post_states;
     }
 }
 new lukio_favorites_admin_class();

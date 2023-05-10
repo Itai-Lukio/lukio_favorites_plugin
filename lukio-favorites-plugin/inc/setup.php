@@ -18,20 +18,6 @@ class Lukio_Favorites_Setup
         add_action('init', array($this, 'init'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue'));
 
-        add_action('plugin_action_links_' . LUKIO_FAVORITES_PLUGIN_MAIN_FILE, array($this, 'plugin_action_links'));
-
-        $lukio_favorites = lukio_favorites();
-        if ($lukio_favorites->get_add_to_tilte_setting()) {
-            // add the filter only when the option to add to title is true
-            add_filter('the_title', array($this, 'add_button_to_titles'), 10, 2);
-        }
-
-        $add_to_menu = $lukio_favorites->get_menu_add_slug();
-        if ($add_to_menu !== false) {
-            // add the filter only when the option to add to menu is true 
-            add_filter("wp_nav_menu_{$add_to_menu}_items", array($this, 'add_button_to_menu'));
-        }
-
         add_action('wp_ajax_lukio_favorites_button_click', array($this, 'ajax_favorite_click'));
         add_action('wp_ajax_nopriv_lukio_favorites_button_click', array($this, 'ajax_favorite_click'));
 
@@ -48,6 +34,18 @@ class Lukio_Favorites_Setup
     public function init()
     {
         load_plugin_textdomain('lukio-favorites-plugin', false, 'lukio-favorites-plugin/languages');
+
+        $lukio_favorites = lukio_favorites();
+        if ($lukio_favorites->get_add_to_tilte_setting()) {
+            // add the filter only when the option to add to title is true
+            add_filter('the_title', array($this, 'add_button_to_titles'), 10, 2);
+        }
+
+        $add_to_menu = $lukio_favorites->get_menu_add_slug();
+        if ($add_to_menu !== false) {
+            // add the filter only when the option to add to menu is true 
+            add_filter("wp_nav_menu_{$add_to_menu}_items", array($this, 'add_button_to_menu'));
+        }
     }
 
     /**
@@ -64,10 +62,10 @@ class Lukio_Favorites_Setup
         wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'), true);
         wp_localize_script(
             'lukio_favorites_script',
-            'lukio_favorites_ajax',
+            'lukio_favorites_data',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'favorites_page' => $lukio_favorites->get_favorites_page_url()
+                'fragment_indicator' => Lukio_Favorites_Class::FRAGMENT_INDICATOR,
             )
         );
     }
@@ -129,6 +127,8 @@ class Lukio_Favorites_Setup
      * 
      * @param array $atts user defined attributes in shortcode tag, default `[]`
      * 
+     * @return string button markup
+     * 
      * @author Itai Dotan
      */
     public function button_markup($atts = [])
@@ -184,26 +184,6 @@ class Lukio_Favorites_Setup
     }
 
     /**
-     * add link to the plug in option page in wp plugin page when the plugin is active
-     * 
-     * @param array $actions an array of plugin action links
-     * 
-     * @return array modified actions link when the plug in is active, un-modified when not active
-     * 
-     * @author Itai Dotan
-     */
-    public function plugin_action_links($actions)
-    {
-        if (isset($actions['deactivate'])) {
-            $setting = array(
-                'settings' => '<a href ="' . esc_url(add_query_arg('page', 'lukio_favorites', get_admin_url() . 'admin.php')) . '">' . __('Settings', 'lukio-favorites-plugin') . '</a>',
-            );
-            $actions = array_merge($setting, $actions);
-        }
-        return $actions;
-    }
-
-    /**
      * hook in to 'the_title' filter and append the favorite button to it when set to and the post type is selected
      * 
      * @param string $post_title the title coming from the hook
@@ -215,8 +195,11 @@ class Lukio_Favorites_Setup
      */
     public function add_button_to_titles($post_title, $post_id)
     {
-        // to not add the button in any admin page
-        if (is_admin() && !wp_doing_ajax()) {
+        // allow 3rd partys to check for their custom admin ajax, or to not add the button in any admin page and admin quick edit ajax
+        if (
+            apply_filters('lukio_favorites_skip_button_title', false) ||
+            is_admin() && (!wp_doing_ajax() || isset($_REQUEST['screen']) && isset($_REQUEST['action']) && $_REQUEST['action'] === 'inline-save')
+        ) {
             return $post_title;
         }
 
@@ -259,19 +242,25 @@ class Lukio_Favorites_Setup
      */
     public function favorites_page_content()
     {
+        // filter to add extra class to the wrapper
+        $class = apply_filters('lukio_favorites_page_wrapper_class', '');
+        $class = $class == '' ? '' : ' ' . trim($class);
+
         $lukio_favorites = lukio_favorites();
-        // set for easy access in the template
+
+        global $empty_favorites, $user_favorites;
         $empty_favorites = $lukio_favorites->is_favorites_empty();
         $user_favorites = $empty_favorites ? array() : $lukio_favorites->get_user_favorites();
 
-        // add 'in_fragment' class to the button so the js want try to update buttons that was updated from the fragment
-        add_filter('lukio_favorites_button_markup_class', function ($class) {
-            return $class . ' in_fragment';
-        });
+        do_action('lukio_favorites_before_fragment');
 
         ob_start();
         include $this->get_template_path('favorites-content');
-        return ob_get_clean();
+        $content = ob_get_clean();
+
+        do_action('lukio_favorites_after_fragment');
+
+        return $content;
     }
 
     /**
@@ -310,7 +299,7 @@ class Lukio_Favorites_Setup
         $lukio_favorites = lukio_favorites();
         $empty = $lukio_favorites->is_favorites_empty() ? ' empty' : '';
         $type_indicator = $lukio_favorites->is_menu_button_text() ? ' text_button' : ' image_button';
-        $atts['class'] = is_null($atts['class']) ? '' : ' ' . trim($atts['class']);
+        $atts['class'] = apply_filters('lukio_favorites_menu_button_class', is_null($atts['class']) ? '' : ' ' . trim($atts['class']));
 
         ob_start();
     ?>

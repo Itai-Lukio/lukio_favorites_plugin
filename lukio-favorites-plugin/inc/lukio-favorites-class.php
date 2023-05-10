@@ -26,6 +26,18 @@ class Lukio_Favorites_Class
     const POST_FAVORITES_COUNT = 'lukio_favorites_count';
 
     /**
+     * indicator class for button in a fragment
+     * @var string indicator class
+     */
+    const FRAGMENT_INDICATOR = 'in_fragment';
+
+    /**
+     * session index of the favorites
+     * @var array user favorites
+     */
+    const FAVORITES_SESSION = 'lukio_favorites_session';
+
+    /**
      * instance of the plugin
      * 
      * @var Lukio_Favorites_Class|null class instance when running, null before class was first called
@@ -231,22 +243,21 @@ class Lukio_Favorites_Class
             session_start();
         }
 
-        // set lukio_fav_session in the session when not set yet
-        if (!isset($_SESSION['lukio_fav_session'])) {
-            $_SESSION['lukio_fav_session'] = array();
+        // set FAVORITES_SESSION in the session when not set yet
+        if (!isset($_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION])) {
+            $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = array();
         }
 
         $this->set_default_options();
 
         $this->update_options();
 
-        // useing priority 20 to be triggerd after the setup.php init action
-        add_action('init', array($this, 'init'), 20);
-
         add_action('wp_login', array($this, 'merge_session_in_to_user'), 10, 2);
 
-        // add a post display state for plugin pages.
-        add_filter('display_post_states', array($this, 'add_display_post_states'), 10, 2);
+        add_action('lukio_favorites_before_fragment', array($this, 'before_fragment'));
+        add_action('lukio_favorites_after_fragment', array($this, 'after_fragment'));
+
+        $this->init();
     }
 
     /**
@@ -254,14 +265,13 @@ class Lukio_Favorites_Class
      * 
      * @author Itai Dotan
      */
-    public function init()
+    private function init()
     {
         // set the user_id and saved_favorites at init to be able to use get_current_user_id(), before init get_current_user_id() return 0
         $this->user_id = get_current_user_id();
         $this->set_saved_favorites();
         $this->set_empty_text_button();
 
-        // set svg_array in init to have the textdomain loaded
         $this->svg_array = include LUKIO_FAVORITES_PLUGIN_DIR . 'assets/icons-array.php';
     }
 
@@ -296,10 +306,28 @@ class Lukio_Favorites_Class
     {
         if ($this->user_id) {
             $user_meta = get_user_meta($this->user_id, Lukio_Favorites_Class::USER_FAVORITES, true);
-            $this->saved_favorites = is_array($user_meta) ? $user_meta : array();
+            $favorites = is_array($user_meta) ? $user_meta : array();
         } else {
-            $this->saved_favorites = $_SESSION['lukio_fav_session'];
+            $favorites = $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION];
         }
+
+        foreach ($favorites as $type => $posts) {
+            foreach ($posts as $post_index => $post_id) {
+                $post = get_post($post_id);
+
+                if (is_null($post)) {
+                    // remove non-existing posts
+                    unset($favorites[$type][$post_index]);
+                }
+            }
+
+            // remove the type index when empty
+            if (empty($favorites[$type])) {
+                unset($favorites[$type]);
+            }
+        }
+
+        $this->update_favorites($favorites);
     }
 
     /**
@@ -335,7 +363,7 @@ class Lukio_Favorites_Class
         if ($this->user_id) {
             update_user_meta($this->user_id, Lukio_Favorites_Class::USER_FAVORITES, $new_favorites);
         } else {
-            $_SESSION['lukio_fav_session'] = $new_favorites;
+            $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = $new_favorites;
         }
     }
 
@@ -444,21 +472,6 @@ class Lukio_Favorites_Class
         foreach ($pages as $slug => $page) {
             $this->create_page($slug, $page['option_index'], $page['title'], $page['content']);
         }
-    }
-
-    /**
-     * Add a post display state for the plugin pages
-     *
-     * @param array $post_states An array of post display states.
-     * @param WP_Post $post The current post object.
-     */
-    public function add_display_post_states($post_states, $post)
-    {
-        if ($this->active_options['favorites_page_id'] === $post->ID) {
-            $post_states['lukio_favorites'] = __('Favorites page', 'lukio-favorites-plugin');
-        }
-
-        return $post_states;
     }
 
     /**
@@ -701,8 +714,8 @@ class Lukio_Favorites_Class
         $this->user_id = $user->ID;
         $this->set_saved_favorites();
 
-        // go over the session liked and add to the user when not liked yet
-        foreach ($_SESSION['lukio_fav_session'] as $post_type => $post_type_array) {
+        // go over the session favorites and add to the user when not added yet
+        foreach ($_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] as $post_type => $post_type_array) {
             foreach ($post_type_array as $post_id) {
                 if (!$this->get_favorites_status($post_id)) {
                     $this->favorites_button_clicked($post_id, $post_type, true);
@@ -712,7 +725,7 @@ class Lukio_Favorites_Class
         $this->update_favorites_empty_status();
 
         // reset the session
-        $_SESSION['lukio_fav_session'] = array();
+        $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = array();
     }
 
     /**
@@ -727,11 +740,13 @@ class Lukio_Favorites_Class
             foreach ($posts as $post_id) {
                 $post = get_post($post_id);
 
+                // deleted post are probble already deleted from the favorites, but left to prevent errors 
                 if (is_null($post)) {
                     continue;
                 }
 
                 if ($post->post_status === 'publish') {
+                    //once a valid post found the favorites is not empty, braek out of the 2 foreach
                     $empty = false;
                     break 2;
                 }
@@ -741,7 +756,7 @@ class Lukio_Favorites_Class
     }
 
     /**
-     * check if the user's favorites is empty
+     * return the empty state of the user favorites
      * 
      * @return bool true when the favorites is empty
      * 
@@ -804,6 +819,53 @@ class Lukio_Favorites_Class
             ?>
         </a>
 <?php
+    }
+
+    /**
+     * add indicator class to indicate the button is in an updating fragment
+     * 
+     * @param string $class class string to append indicator to
+     * 
+     * @return string class string with indicator
+     * 
+     * @author Itai Dotan
+     */
+    public function add_fragment_indicator($class)
+    {
+        return $class . ' ' . Lukio_Favorites_Class::FRAGMENT_INDICATOR;
+    }
+
+    /**
+     * dynamically add/remove fragments filters
+     * 
+     * @param bool $add true to add filters, false to remove filters
+     * 
+     * @author Itai Dotan
+     */
+    private function handle_fragment_filters($add)
+    {
+        $action = $add ? 'add_filter' : 'remove_filter';
+        $action('lukio_favorites_button_markup_class', [$this, 'add_fragment_indicator'], 10);
+    }
+
+    /**
+     * add filters needed before a fragment
+     * 
+     * @author Itai Dotan
+     */
+    public function before_fragment()
+    {
+        $this->handle_fragment_filters(true);
+    }
+
+    /**
+     * remove filters added before a fragment
+     * 
+     * @author Itai Dotan
+     */
+    public function after_fragment()
+    {
+        $this->handle_fragment_filters(false);
     }
 }
 

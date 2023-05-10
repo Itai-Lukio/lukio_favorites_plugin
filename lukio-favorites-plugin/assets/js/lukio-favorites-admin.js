@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
     function refresh_preview_images(image_id, preview_image, preview_added) {
         $.ajax({
             method: 'GET',
-            url: lukio_favorites_ajax.ajax_url,
+            url: lukio_favorites_data.ajax_url,
             data: {
                 action: 'lukio_favorites_get_preview_img',
                 id: image_id

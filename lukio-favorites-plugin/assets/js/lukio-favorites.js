@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
     class lukio_favorites_plugin_class {
         constructor() {
             this.favorites_working = false;
-            this.is_favorites_page = location.origin + location.pathname == lukio_favorites_ajax.favorites_page;
+            this.fragment_indicator = lukio_favorites_data.fragment_indicator
             this.body = $('body');
             this.storage_key = 'lukio_favorites_fragments';
             this.supports_html5_storage = true;
@@ -65,7 +65,7 @@ jQuery(document).ready(function ($) {
                 result = null;
             $.ajax({
                 method: "POST",
-                url: lukio_favorites_ajax.ajax_url,
+                url: lukio_favorites_data.ajax_url,
                 data: { action: 'lukio_favorites_button_click', post_id, post_type, nonce },
                 success: function (response) {
                     if (response) {
@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
                 complete: function () {
                     btns.removeClass('working');
                     class_object.favorites_working = false;
-                    // trigger event indicating the ajax is done and add the buttons and received fragments
+                    // trigger event indicating the ajax is done and add the buttons and result
                     class_object.body.trigger('lukio_favorites_plugin_refresh', [btns, result]);
                 }
             })
@@ -105,7 +105,7 @@ jQuery(document).ready(function ($) {
          */
         update_fragments(fragments) {
             $.each(fragments, function (selector, content) {
-                $(selector).replaceWith(content);
+                $(selector + ':not(.skip_update)').replaceWith(content);
             });
         }
 
@@ -172,7 +172,7 @@ jQuery(document).ready(function ($) {
             this.update_menu_button(local.empty);
 
             // update the buttons which are not updated from the fragment
-            $('.lukio_favorites_button:not(.in_fragment)').each(function () {
+            $(`.lukio_favorites_button:not(.${this.fragment_indicator})`).each(function () {
                 let btn = $(this);
                 btn.attr('data-lukio-fav', local.posts.indexOf(btn.data('post-id')) != -1 ? 1 : 0);
             });
