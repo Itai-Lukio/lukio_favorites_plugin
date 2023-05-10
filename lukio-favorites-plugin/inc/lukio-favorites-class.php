@@ -426,7 +426,7 @@ class Lukio_Favorites_Class
         }
 
         // Search for a matching valid trashed page.
-        $trashed_page_found = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_status = 'trash' AND post_content LIKE %s LIMIT 1;", "%{$page_content}%"));
+        $trashed_page_found = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_status = 'trash' AND post_content LIKE %s LIMIT 1;", "%{$shortcode}%"));
 
         if ($trashed_page_found) {
             $page_data = array(
