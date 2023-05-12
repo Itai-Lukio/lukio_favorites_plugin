@@ -311,22 +311,6 @@ class Lukio_Favorites_Class
             $favorites = $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION];
         }
 
-        foreach ($favorites as $type => $posts) {
-            foreach ($posts as $post_index => $post_id) {
-                $post = get_post($post_id);
-
-                if (is_null($post)) {
-                    // remove non-existing posts
-                    unset($favorites[$type][$post_index]);
-                }
-            }
-
-            // remove the type index when empty
-            if (empty($favorites[$type])) {
-                unset($favorites[$type]);
-            }
-        }
-
         $this->update_favorites($favorites);
     }
 
@@ -701,6 +685,32 @@ class Lukio_Favorites_Class
     }
 
     /**
+     * clear non-existing posts from the favorites
+     * 
+     * @author Itai Dotan
+     */
+    public function clear_deleted_posts()
+    {
+        foreach ($this->saved_favorites as $type => $posts) {
+            foreach ($posts as $post_index => $post_id) {
+                $post = get_post($post_id);
+
+                if (is_null($post)) {
+                    // remove non-existing posts
+                    unset($this->saved_favorites[$type][$post_index]);
+                }
+            }
+
+            // remove the type index when empty
+            if (empty($this->saved_favorites[$type])) {
+                unset($this->saved_favorites[$type]);
+            }
+        }
+
+        $this->update_favorites($this->saved_favorites);
+    }
+
+    /**
      * on user login get the favorites from session and add them to the user saved favorites when not added before
      * 
      * @param string $user_login username
@@ -722,6 +732,8 @@ class Lukio_Favorites_Class
                 }
             }
         }
+
+        $this->clear_deleted_posts();
         $this->update_favorites_empty_status();
 
         // reset the session
@@ -740,7 +752,6 @@ class Lukio_Favorites_Class
             foreach ($posts as $post_id) {
                 $post = get_post($post_id);
 
-                // deleted post are probble already deleted from the favorites, but left to prevent errors 
                 if (is_null($post)) {
                     continue;
                 }

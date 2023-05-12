@@ -87,20 +87,21 @@ body .lukio_favorites_page_wrapper {
 }
 
 .lukio_favorites_page_p {
-    margin: auto 0 5px;
-    max-width: 230px;
+    margin: 0 0 auto;
+    max-width: 95%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .lukio_favorites_page_post a.button {
+    margin-top: 5px;
     display: block;
     padding: 10px 15px;
     color: #232323;
     background-color: #cacaca;
     text-decoration: none;
-    transition: all 0.2s ease-in-out;
+    transition: background-color .5s ease-in-out, color .5s ease-in-out;
 }
 
 .lukio_favorites_page_post a.button:hover {
