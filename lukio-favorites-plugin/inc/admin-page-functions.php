@@ -50,15 +50,15 @@ class lukio_favorites_admin_class
      */
     public function admin_enqueue()
     {
-        wp_enqueue_style('lukio_favorites_admin_menu_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/Lukio-fav.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/Lukio-fav.min.css'));
+        wp_enqueue_style('lukio_favorites_admin_menu_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . 'assets/css/Lukio-fav.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/css/Lukio-fav.min.css'));
 
         if (get_current_screen()->base == 'toplevel_page_lukio_favorites') {
             // enqueue needed to the admin page
             wp_enqueue_media();
             wp_enqueue_style('wp-color-picker');
-            wp_enqueue_style('lukio_favorites_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
-            wp_enqueue_style('lukio_favorites_admin_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites-admin.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites-admin.min.css'));
-            wp_enqueue_script('lukio_favorites_admin_scripts', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites-admin.min.js', ['jquery', 'wp-color-picker'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites-admin.min.js'), true);
+            wp_enqueue_style('lukio_favorites_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . 'assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/css/lukio-favorites.min.css'));
+            wp_enqueue_style('lukio_favorites_admin_stylesheet', LUKIO_FAVORITES_PLUGIN_URL . 'assets/css/lukio-favorites-admin.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/css/lukio-favorites-admin.min.css'));
+            wp_enqueue_script('lukio_favorites_admin_scripts', LUKIO_FAVORITES_PLUGIN_URL . 'assets/js/lukio-favorites-admin.min.js', ['jquery', 'wp-color-picker'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/js/lukio-favorites-admin.min.js'), true);
             wp_localize_script(
                 'lukio_favorites_admin_scripts',
                 'lukio_favorites_data',

@@ -56,10 +56,10 @@ class Lukio_Favorites_Setup
     public function enqueue()
     {
         $lukio_favorites =  lukio_favorites();
-        wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . '/assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/css/lukio-favorites.min.css'));
+        wp_enqueue_style('lukio_favorites_stylesheets', LUKIO_FAVORITES_PLUGIN_URL . 'assets/css/lukio-favorites.min.css', [], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/css/lukio-favorites.min.css'));
         wp_add_inline_style('lukio_favorites_stylesheets', $lukio_favorites->dynamic_css());
 
-        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . '/assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . '/assets/js/lukio-favorites.min.js'), true);
+        wp_enqueue_script('lukio_favorites_script', LUKIO_FAVORITES_PLUGIN_URL . 'assets/js/lukio-favorites.min.js', ['jquery'], filemtime(LUKIO_FAVORITES_PLUGIN_DIR . 'assets/js/lukio-favorites.min.js'), true);
         wp_localize_script(
             'lukio_favorites_script',
             'lukio_favorites_data',
