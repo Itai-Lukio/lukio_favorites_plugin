@@ -815,8 +815,7 @@ class Lukio_Favorites_Class
         $button_title = apply_filters('lukio_favorites_menu_button_text', $this->active_options['menu_button_text']);
         $title_attr = $is_text_button ? '' : ' title="' . esc_attr($button_title) . '"';
         ?>
-        <a class="lukio_favorites_menu_button_link" href="<?php echo esc_attr($this->get_favorites_page_url()) ?>" <?php echo $title_attr; ?>>
-            <?php
+        <a class="lukio_favorites_menu_button_link" href="<?php echo esc_attr($this->get_favorites_page_url()) ?>"<?php echo $title_attr; ?>><?php
             if ($is_text_button) {
                 echo $button_title;
             } else {

@@ -20,10 +20,10 @@ jQuery(document).ready(function ($) {
         test_html5_storage() {
             try {
                 this.supports_html5_storage = ('sessionStorage' in window && window.sessionStorage !== null);
-                window.sessionStorage.setItem('lukio', 'test');
-                window.sessionStorage.removeItem('lukio');
-                window.localStorage.setItem('lukio', 'test');
-                window.localStorage.removeItem('lukio');
+                window.sessionStorage.setItem('lukio_favorites_test', 'test');
+                window.sessionStorage.removeItem('lukio_favorites_test');
+                window.localStorage.setItem('lukio_favorites_test', 'test');
+                window.localStorage.removeItem('lukio_favorites_test');
             } catch (err) {
                 this.supports_html5_storage = false;
             }
@@ -130,6 +130,7 @@ jQuery(document).ready(function ($) {
         }
 
         /**
+         * update storage with the new data after a button was clicked
          * 
          * @param {Object} fragments fragments to update, fragment content indexed by its selector
          * @param {Array} posts post ids of posts in favorites

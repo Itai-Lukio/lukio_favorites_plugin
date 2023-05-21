@@ -5,7 +5,7 @@ defined('ABSPATH') || exit;
 /**
  * Handle the admin side of the plugin
  */
-class lukio_favorites_admin_class
+class Lukio_Favorites_Admin_Class
 {
     /**
      * add actions of the class
@@ -86,6 +86,45 @@ class lukio_favorites_admin_class
     }
 
     /**
+     * sanitize the posted option before saving to the options
+     * 
+     * @param string $type type of option
+     * @param string $key name of the option
+     * 
+     * @return mix sanitized option
+     * 
+     * @author Itai Dotan
+     */
+    private function sanitize_option($type, $key){
+        switch ($type) {
+            case 'bool':
+                $option =  true;
+                break;
+            case 'hex':
+                $option = sanitize_hex_color($_POST[$key]);
+                break;
+            case 'text':
+                $option = sanitize_text_field($_POST[$key]);
+                break;
+            case 'textarea':
+                $option = sanitize_textarea_field($_POST[$key]);
+                break;
+            case 'array':
+                $option = array_map(
+                    function ($name) {
+                        return sanitize_text_field($name);
+                    },
+                    (array)$_POST[$key]
+                );
+                break;
+            case 'int':
+                $option = (int)$_POST[$key];
+                break;
+        }
+        return $option;
+    }
+
+    /**
      * save the new posted options
      * 
      * @author Itai Dotan
@@ -108,31 +147,7 @@ class lukio_favorites_admin_class
                 continue;
             }
 
-            switch ($options_schematics[$key]['type']) {
-                case 'bool':
-                    $option =  true;
-                    break;
-                case 'hex':
-                    $option = sanitize_hex_color($_POST[$key]);
-                    break;
-                case 'text':
-                    $option = sanitize_text_field($_POST[$key]);
-                    break;
-                case 'textarea':
-                    $option = sanitize_textarea_field($_POST[$key]);
-                    break;
-                case 'array':
-                    $option = array_map(
-                        function ($post_name) {
-                            return sanitize_text_field($post_name);
-                        },
-                        (array)$_POST[$key]
-                    );
-                    break;
-                case 'int':
-                    $option = (int)$_POST[$key];
-                    break;
-            }
+            $option = $this->sanitize_option($options_schematics[$key]['type'], $key);
         }
 
         update_option(Lukio_Favorites_Class::OPTIONS_META_KEY, $options);
@@ -198,4 +213,4 @@ class lukio_favorites_admin_class
         return $post_states;
     }
 }
-new lukio_favorites_admin_class();
+new Lukio_Favorites_Admin_Class();
