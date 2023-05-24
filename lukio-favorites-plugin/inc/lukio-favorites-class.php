@@ -56,116 +56,7 @@ class Lukio_Favorites_Class
      * 
      * @var array $default_options_schematics schematics for the default options the plugin start with, indexed by option name
      */
-    private $default_options_schematics = array(
-        // general tab options
-        'favorites_page_id' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'add_to_title' => array(
-            'type' => 'bool',
-            'default' => true
-        ),
-        'post_types' => array(
-            'type' => 'array',
-            'default' => ['post']
-        ),
-        // button tab options
-        'text_button' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'add_text' => array(
-            'type' => 'text',
-            'default' => ''
-        ),
-        'remove_text' => array(
-            'type' => 'text',
-            'default' => ''
-        ),
-        'custom_button' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'svg_index' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'button_color' => array(
-            'type' => 'hex',
-            'default' => '#4aa896'
-        ),
-        'custom_button_off' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'custom_button_on' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'button_width' => array(
-            'type' => 'int',
-            'default' => 20
-        ),
-        'button_height' => array(
-            'type' => 'int',
-            'default' => 20
-        ),
-        // menu tab options
-        'add_to_menu' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'menu_add_slug' => array(
-            'type' => 'text',
-            'default' => ''
-        ),
-        'add_to_menu_start' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'menu_button_use_text' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'menu_button_text' => array(
-            'type' => 'text',
-            'default' => ''
-        ),
-        'custom_menu_button' => array(
-            'type' => 'bool',
-            'default' => false
-        ),
-        'menu_svg_index' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'menu_button_color' => array(
-            'type' => 'hex',
-            'default' => '#4aa896'
-        ),
-        'custom_menu_button_off' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'custom_menu_button_on' => array(
-            'type' => 'int',
-            'default' => 0
-        ),
-        'menu_button_width' => array(
-            'type' => 'int',
-            'default' => 20
-        ),
-        'menu_button_height' => array(
-            'type' => 'int',
-            'default' => 20
-        ),
-        // extar css tab
-        'extra_css' => array(
-            'type' => 'textarea',
-            'default' => ''
-        ),
-    );
+    private $default_options_schematics;
 
     /**
      * default plugin options
@@ -248,31 +139,140 @@ class Lukio_Favorites_Class
             $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = array();
         }
 
+        $this->set_default_options_schematics();
+
         $this->set_default_options();
 
         $this->update_options();
+
+        $this->user_id = get_current_user_id();
+        $this->set_saved_favorites();
+
+        $this->svg_array = include LUKIO_FAVORITES_PLUGIN_DIR . 'assets/icons-array.php';
 
         add_action('wp_login', array($this, 'merge_session_in_to_user'), 10, 2);
 
         add_action('lukio_favorites_before_fragment', array($this, 'before_fragment'));
         add_action('lukio_favorites_after_fragment', array($this, 'after_fragment'));
-
-        $this->init();
     }
 
     /**
-     * init action to set up the class
+     * set default options schematics
      * 
      * @author Itai Dotan
      */
-    private function init()
+    private function set_default_options_schematics()
     {
-        // set the user_id and saved_favorites at init to be able to use get_current_user_id(), before init get_current_user_id() return 0
-        $this->user_id = get_current_user_id();
-        $this->set_saved_favorites();
-        $this->set_empty_text_button();
-
-        $this->svg_array = include LUKIO_FAVORITES_PLUGIN_DIR . 'assets/icons-array.php';
+        $this->default_options_schematics = array(
+            // general tab options
+            'favorites_page_id' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'add_to_title' => array(
+                'type' => 'bool',
+                'default' => true
+            ),
+            'post_types' => array(
+                'type' => 'array',
+                'default' => ['post']
+            ),
+            // button tab options
+            'text_button' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'add_text' => array(
+                'type' => 'text',
+                'default' => __('Add to favorites', 'lukio-favorites-plugin')
+            ),
+            'remove_text' => array(
+                'type' => 'text',
+                'default' => __('Remove from favorites', 'lukio-favorites-plugin')
+            ),
+            'custom_button' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'svg_index' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'button_color' => array(
+                'type' => 'hex',
+                'default' => '#4aa896'
+            ),
+            'custom_button_off' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'custom_button_on' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'button_width' => array(
+                'type' => 'int',
+                'default' => 20
+            ),
+            'button_height' => array(
+                'type' => 'int',
+                'default' => 20
+            ),
+            // menu tab options
+            'add_to_menu' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'menu_add_slug' => array(
+                'type' => 'text',
+                'default' => ''
+            ),
+            'add_to_menu_start' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'menu_button_use_text' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'menu_button_text' => array(
+                'type' => 'text',
+                'default' => __('Favorites', 'lukio-favorites-plugin')
+            ),
+            'custom_menu_button' => array(
+                'type' => 'bool',
+                'default' => false
+            ),
+            'menu_svg_index' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'menu_button_color' => array(
+                'type' => 'hex',
+                'default' => '#4aa896'
+            ),
+            'custom_menu_button_off' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'custom_menu_button_on' => array(
+                'type' => 'int',
+                'default' => 0
+            ),
+            'menu_button_width' => array(
+                'type' => 'int',
+                'default' => 20
+            ),
+            'menu_button_height' => array(
+                'type' => 'int',
+                'default' => 20
+            ),
+            // extar css tab
+            'extra_css' => array(
+                'type' => 'textarea',
+                'default' => ''
+            ),
+        );
     }
 
     /**
@@ -312,26 +312,6 @@ class Lukio_Favorites_Class
         }
 
         $this->update_favorites($favorites);
-    }
-
-    /**
-     * reset empty button texts to the relevant translation
-     * 
-     * @author Itai Dotan
-     */
-    public function set_empty_text_button()
-    {
-        $texts = array(
-            'add_text' => __('Add to favorites', 'lukio-favorites-plugin'),
-            'remove_text' => __('Remove from favorites', 'lukio-favorites-plugin'),
-            'menu_button_text' => __('Favorites', 'lukio-favorites-plugin'),
-        );
-
-        foreach ($texts as $text_index => $text_to_use) {
-            if ($this->active_options[$text_index] == '') {
-                $this->active_options[$text_index] = $text_to_use;
-            }
-        }
     }
 
     /**
@@ -554,7 +534,7 @@ class Lukio_Favorites_Class
      * 
      * @param string $property property name to get
      * 
-     * @return mix|false the property value or false when no property with the given name
+     * @return mix|null the property value or null when no property with the given name
      * 
      * @author Itai Dotan
      */
@@ -563,7 +543,7 @@ class Lukio_Favorites_Class
         if (isset($this->$property)) {
             return $this->$property;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -814,20 +794,19 @@ class Lukio_Favorites_Class
         $is_text_button = $this->is_menu_button_text();
         $button_title = apply_filters('lukio_favorites_menu_button_text', $this->active_options['menu_button_text']);
         $title_attr = $is_text_button ? '' : ' title="' . esc_attr($button_title) . '"';
-        ?>
-        <a class="lukio_favorites_menu_button_link" href="<?php echo esc_attr($this->get_favorites_page_url()) ?>"<?php echo $title_attr; ?>><?php
-            if ($is_text_button) {
-                echo $button_title;
+
+        if ($is_text_button) {
+            $link_content = $button_title;
+        } else {
+            if ($this->active_options['custom_menu_button']) {
+                $link_content = wp_get_attachment_image($this->active_options['custom_menu_button_off'], 'thumbnail', false, array('class' => 'lukio_favorites_menu_button_image empty')) .
+                    wp_get_attachment_image($this->active_options['custom_menu_button_on'], 'thumbnail', false, array('class' => 'lukio_favorites_menu_button_image'));
             } else {
-                if ($this->active_options['custom_menu_button']) {
-                    echo wp_get_attachment_image($this->active_options['custom_menu_button_off'], 'thumbnail', false, array('class' => 'lukio_favorites_menu_button_image empty'));
-                    echo wp_get_attachment_image($this->active_options['custom_menu_button_on'], 'thumbnail', false, array('class' => 'lukio_favorites_menu_button_image'));
-                } else {
-                    echo $this->svg_array[$this->active_options['menu_svg_index']]['svg'];
-                }
+                $link_content = $this->svg_array[$this->active_options['menu_svg_index']]['svg'];
             }
-            ?>
-        </a>
+        }
+        ?>
+        <a class="lukio_favorites_menu_button_link" href="<?php echo esc_attr($this->get_favorites_page_url()) ?>" <?php echo $title_attr; ?>><?php echo $link_content; ?></a>
 <?php
     }
 

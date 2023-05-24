@@ -90,12 +90,14 @@ class Lukio_Favorites_Admin_Class
      * 
      * @param string $type type of option
      * @param string $key name of the option
+     * @param mix $default_value default value the of the option
      * 
      * @return mix sanitized option
      * 
      * @author Itai Dotan
      */
-    private function sanitize_option($type, $key){
+    private function sanitize_option($type, $key, $default_value)
+    {
         switch ($type) {
             case 'bool':
                 $option =  true;
@@ -104,7 +106,8 @@ class Lukio_Favorites_Admin_Class
                 $option = sanitize_hex_color($_POST[$key]);
                 break;
             case 'text':
-                $option = sanitize_text_field($_POST[$key]);
+                $text = sanitize_text_field($_POST[$key]);
+                $option = $text !== '' ? $text : $default_value;
                 break;
             case 'textarea':
                 $option = sanitize_textarea_field($_POST[$key]);
@@ -147,12 +150,11 @@ class Lukio_Favorites_Admin_Class
                 continue;
             }
 
-            $option = $this->sanitize_option($options_schematics[$key]['type'], $key);
+            $option = $this->sanitize_option($options_schematics[$key]['type'], $key, $option);
         }
 
         update_option(Lukio_Favorites_Class::OPTIONS_META_KEY, $options);
         $lukio_favorites->update_options();
-        $lukio_favorites->set_empty_text_button();
     }
 
     /**
