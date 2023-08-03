@@ -32,10 +32,10 @@ class Lukio_Favorites_Class
     const FRAGMENT_INDICATOR = 'in_fragment';
 
     /**
-     * session index of the favorites
+     * cookie index of the favorites
      * @var array user favorites
      */
-    const FAVORITES_SESSION = 'lukio_favorites_session';
+    const FAVORITES_COOKIE = 'lukio_favorites_cookie';
 
     /**
      * instance of the plugin
@@ -104,6 +104,8 @@ class Lukio_Favorites_Class
 
     /**
      * holds the empty status of the user favorites
+     * 
+     * @var null|bool null at start, bool of the empty status affter populated 
      */
     private $favorites_empty = null;
 
@@ -129,14 +131,13 @@ class Lukio_Favorites_Class
      */
     private function __construct()
     {
-        // start a session when needed
-        if (!session_id()) {
-            session_start();
-        }
-
-        // set FAVORITES_SESSION in the session when not set yet
-        if (!isset($_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION])) {
-            $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = array();
+        // setup FAVORITES_COOKIE
+        if (!isset($_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE])) {
+            // when not set start with empty array
+            $_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE] = array();
+        } else {
+            // when set decode the json data
+            $_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE] = json_decode(stripslashes($_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE]), true);
         }
 
         $this->set_default_options_schematics();
@@ -150,7 +151,7 @@ class Lukio_Favorites_Class
 
         $this->svg_array = include LUKIO_FAVORITES_PLUGIN_DIR . 'assets/icons-array.php';
 
-        add_action('wp_login', array($this, 'merge_session_in_to_user'), 10, 2);
+        add_action('wp_login', array($this, 'merge_cookie_in_to_user'), 10, 2);
 
         add_action('lukio_favorites_before_fragment', array($this, 'before_fragment'));
         add_action('lukio_favorites_after_fragment', array($this, 'after_fragment'));
@@ -308,7 +309,7 @@ class Lukio_Favorites_Class
             $user_meta = get_user_meta($this->user_id, Lukio_Favorites_Class::USER_FAVORITES, true);
             $favorites = is_array($user_meta) ? $user_meta : array();
         } else {
-            $favorites = $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION];
+            $favorites = $_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE];
         }
 
         $this->update_favorites($favorites);
@@ -327,7 +328,7 @@ class Lukio_Favorites_Class
         if ($this->user_id) {
             update_user_meta($this->user_id, Lukio_Favorites_Class::USER_FAVORITES, $new_favorites);
         } else {
-            $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = $new_favorites;
+            $_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE] = $new_favorites;
         }
     }
 
@@ -691,21 +692,21 @@ class Lukio_Favorites_Class
     }
 
     /**
-     * on user login get the favorites from session and add them to the user saved favorites when not added before
+     * on user login get the favorites from cookie and add them to the user saved favorites when not added before
      * 
      * @param string $user_login username
      * @param WP_User $user object of the logged-in user
      * 
      * @author Itai Dotan
      */
-    public function merge_session_in_to_user($user_login, $user)
+    public function merge_cookie_in_to_user($user_login, $user)
     {
         // update the class variables
         $this->user_id = $user->ID;
         $this->set_saved_favorites();
 
-        // go over the session favorites and add to the user when not added yet
-        foreach ($_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] as $post_type => $post_type_array) {
+        // go over the cookie favorites and add to the user when not added yet
+        foreach ($_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE] as $post_type => $post_type_array) {
             foreach ($post_type_array as $post_id) {
                 if (!$this->get_favorites_status($post_id)) {
                     $this->favorites_button_clicked($post_id, $post_type, true);
@@ -716,8 +717,9 @@ class Lukio_Favorites_Class
         $this->clear_deleted_posts();
         $this->update_favorites_empty_status();
 
-        // reset the session
-        $_SESSION[Lukio_Favorites_Class::FAVORITES_SESSION] = array();
+        // reset the cookie
+        $_COOKIE[Lukio_Favorites_Class::FAVORITES_COOKIE] = array();
+        setcookie(Lukio_Favorites_Class::FAVORITES_COOKIE, json_encode(array()), 0, '/');
     }
 
     /**
@@ -855,6 +857,22 @@ class Lukio_Favorites_Class
     public function after_fragment()
     {
         $this->handle_fragment_filters(false);
+    }
+
+    /**
+     * get favorites cookie data
+     * 
+     * @return false|string false when user is logged in, json string otherwise
+     * 
+     * @author Itai Dotan
+     */
+    public function get_cookie_data()
+    {
+        if ($this->user_id) {
+            return false;
+        } else {
+            return json_encode($this->saved_favorites);
+        }
     }
 }
 

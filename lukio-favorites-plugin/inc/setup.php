@@ -66,6 +66,7 @@ class Lukio_Favorites_Setup
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'fragment_indicator' => Lukio_Favorites_Class::FRAGMENT_INDICATOR,
+                'favorites_coockie' => Lukio_Favorites_Class::FAVORITES_COOKIE
             )
         );
     }
@@ -117,6 +118,7 @@ class Lukio_Favorites_Setup
                 'empty' => $lukio_favorites->is_favorites_empty(),
                 'fragments' => $this->get_fragments(),
                 'posts' => $posts,
+                'cookie_data' => $lukio_favorites->get_cookie_data(),
             )
         );
         die;

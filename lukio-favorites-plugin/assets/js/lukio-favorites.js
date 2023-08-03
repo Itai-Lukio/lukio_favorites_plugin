@@ -74,6 +74,7 @@ jQuery(document).ready(function ($) {
                         class_object.update_menu_button(result.empty);
                         class_object.update_display(result.fragments, result.favorite, result.empty, btns);
                         class_object.update_storage(result.fragments, result.posts, result.empty);
+                        class_object.update_cookie(result.cookie_data);
                     }
                 },
                 complete: function () {
@@ -177,6 +178,20 @@ jQuery(document).ready(function ($) {
                 let btn = $(this);
                 btn.attr('data-lukio-fav', local.posts.indexOf(btn.data('post-id')) != -1 ? 1 : 0);
             });
+        }
+
+        /**
+         * update the cookie with the new data
+         * 
+         * @param {string} cookie_data json string to save to the cookie
+         * 
+         * @author Itai Dotan
+         */
+        update_cookie(cookie_data) {
+            if (cookie_data == false) {
+                return;
+            }
+            document.cookie = `${lukio_favorites_data.favorites_coockie}=${cookie_data};path=/;`;
         }
     };
 
