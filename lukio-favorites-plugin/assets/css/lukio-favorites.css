@@ -21,6 +21,10 @@
     fill: #4aa896;
 }
 
+.lukio_favorites_button:not(.text_button){
+    font-size: 0;
+}
+
 /* sadly had to use !important to win over woocommerce css */
 .lukio_favorites_button .lukio_favorites_button_image,
 .lukio_favorites_menu_button .lukio_favorites_menu_button_image {
